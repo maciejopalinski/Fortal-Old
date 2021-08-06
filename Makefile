@@ -41,9 +41,6 @@ run: $(TARGET)
 test: $(TEST_TARGET)
 	$(TEST_TARGET)
 
-test.sh: $(TARGET)
-	$(TEST_DIR)/test.sh
-
 memcheck: $(TMP_DIR)/memcheck.out
 
 $(TMP_DIR)/memcheck.out: $(TARGET)
