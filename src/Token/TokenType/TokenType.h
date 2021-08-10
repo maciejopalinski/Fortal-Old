@@ -6,7 +6,7 @@
 #include <ctype.h>
 using namespace std;
 
-#include "../../Utils/Utils.h"
+#include "../../Utils/Location.h"
 
 enum TokenType
 {
@@ -18,5 +18,5 @@ enum TokenType
     TOKEN_LITERAL,
     TOKEN_IDENTIFIER
 };
-
+extern const char *TokenType_strings[];
 const char *TokenType_enum_to_string(TokenType index);
