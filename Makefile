@@ -1,8 +1,9 @@
 TARGET := ./bin/fortal.o
 TEST_TARGET := ./bin/test.o
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -Wextra -Wno-write-strings -g
+CXXFLAGS := -std=c++11 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
 LDFLAGS := 
+ARGS := test/test.f -D
 
 SRC_DIR := ./src
 TEST_DIR := ./test
@@ -36,7 +37,7 @@ $(OBJ_DIR)/test/%.o: $(TEST_DIR)/%.cpp
 all: $(TARGET) $(TEST_TARGET)
 
 run: $(TARGET)
-	$(TARGET)
+	$(TARGET) $(ARGS)
 
 test: $(TEST_TARGET)
 	$(TEST_TARGET)
@@ -45,13 +46,13 @@ memcheck: $(TMP_DIR)/memcheck.out
 
 $(TMP_DIR)/memcheck.out: $(TARGET)
 	@mkdir -p $(TMP_DIR)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=$(TMP_DIR)/memcheck.out $(TARGET)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=$(TMP_DIR)/memcheck.out $(TARGET) $(ARGS)
 
 massif: $(TMP_DIR)/massif.out
 
 $(TMP_DIR)/massif.out: $(TARGET)
 	@mkdir -p $(TMP_DIR)
-	valgrind --tool=massif --massif-out-file=$(TMP_DIR)/massif.out $(TARGET)
+	valgrind --tool=massif --massif-out-file=$(TMP_DIR)/massif.out $(TARGET) $(ARGS)
 
 ms_print: $(TMP_DIR)/ms_print.out
 
