@@ -4,10 +4,10 @@
 class TokenIdentifier
 {
     public:
-        char *name = "";
+        char *name;
 
         TokenIdentifier(char *name, size_t size);
         ~TokenIdentifier();
 
-        void debug(const char *prefix = "");
+        void debug(Location *location);
 };

@@ -1,4 +1,6 @@
 #include "TokenIdentifier.h"
+#include "../../ErrorHandler/ErrorHandler.h"
+#include "../../Utils/Utils.h"
 
 TokenIdentifier::TokenIdentifier(char *name, size_t size)
 {
@@ -8,16 +10,16 @@ TokenIdentifier::TokenIdentifier(char *name, size_t size)
 
 TokenIdentifier::~TokenIdentifier()
 {
-    // printf("[DEBUG] TokenIdentifier destroyed\n");
     delete[] name;
 }
 
-void TokenIdentifier::debug(const char *prefix)
+void TokenIdentifier::debug(Location *location)
 {
-    printf
+    error_handler.logLocation
     (
-        "%sTokenIdentifier(name='%s')\n",
-        prefix,
+        E_DEBUG,
+        location,
+        "TokenIdentifier(name='%s')\n",
         name
     );
 }

@@ -1,4 +1,6 @@
 #include "TokenComment.h"
+#include "../../ErrorHandler/ErrorHandler.h"
+#include "../../Utils/Utils.h"
 
 const char *TokenCommentType_strings[] =
 {
@@ -11,20 +13,20 @@ TokenComment::TokenComment(TokenCommentType type) : type(type) {}
 
 TokenComment::~TokenComment()
 {
-    // printf("[DEBUG] TokenComment destroyed\n");
     if (content) delete[] content;
 }
 
-void TokenComment::debug(const char *prefix)
+void TokenComment::debug(Location *location)
 {
     size_t size = strlen(content);
     char *escaped = new char[4 * size];
     replace_escape_characters(content, size, escaped);
 
-    printf
+    error_handler.logLocation
     (
-        "%sTokenComment(type='%s', content='%s')\n",
-        prefix,
+        E_DEBUG,
+        location,
+        "TokenComment(type='%s', content='%s')\n",
         TokenCommentType_enum_to_string(type),
         escaped
     );
