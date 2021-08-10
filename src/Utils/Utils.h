@@ -6,8 +6,7 @@
 #include <ctype.h>
 using namespace std;
 
-#define COLOR_LIGHT_BLACK "\u001b[30;1m"
-#define COLOR_RESET "\u001b[0m"
+#include "Colors.h"
 
 extern const char *escape_characters[];
 void fill_escape_characters_table();
