@@ -28,5 +28,5 @@ class TokenSeparator
         TokenSeparator(TokenSeparatorType type);
         ~TokenSeparator();
 
-        void debug(const char *prefix = "");
+        void debug(Location *location);
 };

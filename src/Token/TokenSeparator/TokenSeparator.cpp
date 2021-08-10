@@ -1,4 +1,6 @@
 #include "TokenSeparator.h"
+#include "../../ErrorHandler/ErrorHandler.h"
+#include "../../Utils/Utils.h"
 
 const char separators[] =
 {
@@ -34,17 +36,15 @@ const char *TokenSeparatorType_enum_to_string(TokenSeparatorType index) { return
 
 TokenSeparator::TokenSeparator(TokenSeparatorType type) : type(type) {}
 
-TokenSeparator::~TokenSeparator()
-{
-    // printf("[DEBUG] TokenSeparator destroyed\n");
-}
+TokenSeparator::~TokenSeparator() {}
 
-void TokenSeparator::debug(const char *prefix)
+void TokenSeparator::debug(Location *location)
 {
-    printf
+    error_handler.logLocation
     (
-        "%sTokenSeparator(type='%s')\n",
-        prefix,
+        E_DEBUG,
+        location,
+        "TokenSeparator(type='%s')\n",
         TokenSeparatorType_enum_to_string(type)
     );
 }

@@ -1,4 +1,6 @@
 #include "TokenKeyword.h"
+#include "../../ErrorHandler/ErrorHandler.h"
+#include "../../Utils/Utils.h"
 
 const char *keywords[] =
 {
@@ -48,17 +50,15 @@ const char *TokenKeywordType_enum_to_string(TokenKeywordType index) { return Tok
 
 TokenKeyword::TokenKeyword(TokenKeywordType type) : type(type) {}
 
-TokenKeyword::~TokenKeyword()
-{
-    // printf("[DEBUG] TokenKeyword destroyed\n");
-}
+TokenKeyword::~TokenKeyword() {}
 
-void TokenKeyword::debug(const char *prefix)
+void TokenKeyword::debug(Location *location)
 {
-    printf
+    error_handler.logLocation
     (
-        "%sTokenKeyword(type='%s')\n",
-        prefix,
+        E_DEBUG,
+        location,
+        "TokenKeyword(type='%s')\n",
         TokenKeywordType_enum_to_string(type)
     );
 }

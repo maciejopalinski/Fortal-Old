@@ -1,4 +1,6 @@
 #include "TokenLiteral.h"
+#include "../../ErrorHandler/ErrorHandler.h"
+#include "../../Utils/Utils.h"
 
 const char *TokenLiteralType_strings[] =
 {
@@ -25,16 +27,15 @@ TokenLiteral::TokenLiteral(char *content, size_t size) : type(TOKEN_LITERAL_STRI
 
 TokenLiteral::~TokenLiteral()
 {
-    // printf("[DEBUG] TokenLiteral destroyed\n");
     if (type == TOKEN_LITERAL_STRING) delete[] literal_string;
 }
 
-void TokenLiteral::debug(const char *prefix)
+void TokenLiteral::debug(Location *location)
 {
-    if (type == TOKEN_LITERAL_INT)     printf("%sTokenLiteral(type='%s', value=%lli)\n", prefix, TokenLiteralType_enum_to_string(type), literal_int);
-    if (type == TOKEN_LITERAL_FLOAT)   printf("%sTokenLiteral(type='%s', value=%f)\n", prefix, TokenLiteralType_enum_to_string(type), literal_float);
-    if (type == TOKEN_LITERAL_CHAR)    printf("%sTokenLiteral(type='%s', value='%c')\n", prefix, TokenLiteralType_enum_to_string(type), literal_char);
-    if (type == TOKEN_LITERAL_STRING)  printf("%sTokenLiteral(type='%s', value=\"%s\")\n", prefix, TokenLiteralType_enum_to_string(type), literal_string);
-    if (type == TOKEN_LITERAL_BOOL)    printf("%sTokenLiteral(type='%s', value=%s)\n", prefix, TokenLiteralType_enum_to_string(type), literal_bool ? "true" : "false");
-    if (type == TOKEN_LITERAL_NULLPTR) printf("%sTokenLiteral(type='%s', value=%s)\n", prefix, TokenLiteralType_enum_to_string(type), "nullptr");
+    if (type == TOKEN_LITERAL_INT)     error_handler.logLocation(E_DEBUG, location, "TokenLiteral(type='%s', value=%lli)\n", TokenLiteralType_enum_to_string(type), literal_int);
+    if (type == TOKEN_LITERAL_FLOAT)   error_handler.logLocation(E_DEBUG, location, "TokenLiteral(type='%s', value=%f)\n", TokenLiteralType_enum_to_string(type), literal_float);
+    if (type == TOKEN_LITERAL_CHAR)    error_handler.logLocation(E_DEBUG, location, "TokenLiteral(type='%s', value='%c')\n", TokenLiteralType_enum_to_string(type), literal_char);
+    if (type == TOKEN_LITERAL_STRING)  error_handler.logLocation(E_DEBUG, location, "TokenLiteral(type='%s', value=\"%s\")\n", TokenLiteralType_enum_to_string(type), literal_string);
+    if (type == TOKEN_LITERAL_BOOL)    error_handler.logLocation(E_DEBUG, location, "TokenLiteral(type='%s', value=%s)\n", TokenLiteralType_enum_to_string(type), literal_bool ? "true" : "false");
+    if (type == TOKEN_LITERAL_NULLPTR) error_handler.logLocation(E_DEBUG, location, "TokenLiteral(type='%s', value=%s)\n", TokenLiteralType_enum_to_string(type), "nullptr");
 }

@@ -52,5 +52,5 @@ class TokenOperator
         TokenOperator(TokenOperatorType type);
         ~TokenOperator();
 
-        void debug(const char *prefix = "");
+        void debug(Location *location);
 };

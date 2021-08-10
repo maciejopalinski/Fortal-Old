@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../TokenType/TokenType.h"
 
 enum TokenCommentType
@@ -18,5 +19,5 @@ class TokenComment
         TokenComment(TokenCommentType type);
         ~TokenComment();
 
-        void debug(const char *prefix = "");
+        void debug(Location *location);
 };

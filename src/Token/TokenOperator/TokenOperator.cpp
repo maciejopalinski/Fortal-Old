@@ -1,4 +1,6 @@
 #include "TokenOperator.h"
+#include "../../ErrorHandler/ErrorHandler.h"
+#include "../../Utils/Utils.h"
 
 const char *operators[] =
 {
@@ -82,17 +84,15 @@ const char *TokenOperatorType_enum_to_string(TokenOperatorType index) { return T
 
 TokenOperator::TokenOperator(TokenOperatorType type) : type(type) {}
 
-TokenOperator::~TokenOperator()
-{
-    // printf("[DEBUG] TokenOperator destroyed\n");
-}
+TokenOperator::~TokenOperator() {}
 
-void TokenOperator::debug(const char *prefix)
+void TokenOperator::debug(Location *location)
 {
-    printf
+    error_handler.logLocation
     (
-        "%sTokenOperator(type='%s')\n",
-        prefix,
+        E_DEBUG,
+        location,
+        "TokenOperator(type='%s')\n",
         TokenOperatorType_enum_to_string(type)
     );
 }

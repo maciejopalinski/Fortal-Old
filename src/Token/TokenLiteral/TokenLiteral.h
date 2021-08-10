@@ -36,5 +36,5 @@ class TokenLiteral
         TokenLiteral(void *content);
         ~TokenLiteral();
 
-        void debug(const char *prefix = "");
+        void debug(Location *location);
 };

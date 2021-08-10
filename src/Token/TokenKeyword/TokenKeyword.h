@@ -35,5 +35,5 @@ class TokenKeyword
         TokenKeyword(TokenKeywordType type);
         ~TokenKeyword();
 
-        void debug(const char *prefix = "");
+        void debug(Location *location);
 };
