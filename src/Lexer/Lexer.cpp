@@ -1,30 +1,6 @@
 #include "Lexer.h"
-
-void LexerStateManager::saveState()
-{
-    saved_state.position = position;
-    saved_state.line = line;
-    saved_state.column = column;
-    saved_state.current_char = current_char;
-}
-
-void LexerStateManager::loadState()
-{
-    position = saved_state.position;
-    line = saved_state.line;
-    column = saved_state.column;
-    current_char = text[position];
-
-    deleteState();
-}
-
-void LexerStateManager::deleteState()
-{
-    saved_state.position = 0;
-    saved_state.line = 1;
-    saved_state.column = 1;
-    saved_state.current_char = 0;
-}
+#include "../ErrorHandler/ErrorHandler.h"
+#include "../Utils/Utils.h"
 
 Lexer::Lexer() {}
 
@@ -33,35 +9,58 @@ Lexer::~Lexer()
     delete[] text;
 }
 
+void Lexer::saveState()
+{
+    saved_location.line = location.line;
+    saved_location.column = location.column;
+    saved_location.position = location.position;
+}
+
+void Lexer::loadState()
+{
+    location.line = saved_location.line;
+    location.column = saved_location.column;
+    location.position = saved_location.position;
+    current_char = text[location.position];
+    saved_location.clear();
+}
+
 void Lexer::loadFromFile(const char *filename)
 {
-    FILE *file = fopen(filename, "r");
-    if (!file) return;
+    if (!filename || strlen(filename) < 1)
+    {
+        error_handler.no_input_files();
+    }
+
+    location.init(filename);
+
+    FILE *file = fopen(location.filename, "r");
+    if (!file)
+    {
+        error_handler.no_such_file_or_directory(filename);
+        error_handler.no_input_files();
+    };
 
     // get file size
     fseek(file, 0, SEEK_END);
-    long fsize = ftell(file);
+    size_t file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
     // read whole file into buffer
-    char *content = new char[fsize + 1];
-    fread(content, 1, fsize, file);
+    text = new char[file_size + 1];
+    size_t bytes_read = fread(text, 1, file_size, file);
     fclose(file);
-    content[fsize] = 0;
+    text[bytes_read] = 0;
+    text_length = bytes_read;
 
-    loadFromString(content, fsize);
-    delete[] content;
+    if (bytes_read != file_size) error_handler.file_read_error(filename);
+
+    current_char = text[location.position];
 }
 
-void Lexer::loadFromString(const char *text, size_t size)
+void Lexer::setTokenPosition(Token *token)
 {
-    this->text = new char[size + 1];
-    strcpy(this->text, text);
-
-    this->text_length = strlen(this->text);
-
-    position = 0;
-    current_char = this->text[position];
+    token->location->init(&location);
 }
 
 Token *Lexer::getNextToken(Token *token)
@@ -74,14 +73,16 @@ Token *Lexer::getNextToken(Token *token)
             continue;
         }
 
+        setTokenPosition(token);
+
         getComment(token);    if (*token) break;
-        getKeyword(token);    if (*token) break;
+        getLiteral(token);    if (*token) break;
         getSeparator(token);  if (*token) break;
         getOperator(token);   if (*token) break;
-        getLiteral(token);    if (*token) break;
+        getKeyword(token);    if (*token) break;
         getIdentifier(token); if (*token) break;
 
-        printf("[ERROR] Invalid token '%c' on position %li (Ln %li, Col %li)\n", current_char, position, line, column);
+        error_handler.invalid_token(&location, current_char);
         break;
     }
     return token;
@@ -89,23 +90,23 @@ Token *Lexer::getNextToken(Token *token)
 
 void Lexer::nextChar()
 {
-    position++;
-    if (position >= text_length)
+    location.position++;
+    if (location.position >= text_length)
     {
         current_char = 0;
-        line = 0;
-        column = 0;
+        location.line = 0;
+        location.column = 0;
     }
     else
     {
         if (isNewline())
         {
-            line++;
-            column = 1;
+            location.line++;
+            location.column = 1;
         }
-        else column++;
+        else location.column++;
 
-        current_char = text[position];
+        current_char = text[location.position];
     }
 }
 
@@ -137,6 +138,7 @@ Token *Lexer::getLineComment(Token *token)
         size_t capacity = countUntil("\n");
         char *buffer = new char[capacity + 1];
         readUntil(buffer, "\n");
+        eat("\n");
 
         token->comment->content = buffer;
     }
@@ -153,6 +155,7 @@ Token *Lexer::getBlockComment(Token *token)
         size_t capacity = countUntil("*/");
         char *buffer = new char[capacity + 1];
         readUntil(buffer, "*/");
+        eat("*/");
 
         token->comment->content = buffer;
     }
@@ -168,7 +171,7 @@ Token *Lexer::getKeyword(Token *token)
         {
             token->type = TokenType::TOKEN_KEYWORD;
             token->keyword = new TokenKeyword((TokenKeywordType) i);
-            eat(keyword);
+            eat(keyword, true);
             break;
         }
     }
@@ -184,7 +187,7 @@ Token *Lexer::getSeparator(Token *token)
         {
             token->type = TokenType::TOKEN_SEPARATOR;
             token->separator = new TokenSeparator((TokenSeparatorType) i);
-            eat(separator);
+            eat(separator, true);
             break;
         }
     }
@@ -193,17 +196,32 @@ Token *Lexer::getSeparator(Token *token)
 
 Token *Lexer::getOperator(Token *token)
 {
+    const char *max_match_str = nullptr;
+    int max_match_enum;
+    size_t max_match_size = 0;
+
     for (int i = 0; operators[i]; i++)
     {
         auto _operator = operators[i];
-        if (match(_operator, true))
+        size_t operator_size = strlen(_operator);
+        if (match(_operator))
         {
-            token->type = TokenType::TOKEN_OPERATOR;
-            token->_operator = new TokenOperator((TokenOperatorType) i);
-            eat(_operator);
-            break;
+            if (operator_size >= max_match_size)
+            {
+                max_match_str = _operator;
+                max_match_enum = i;
+                max_match_size = operator_size;
+            }
         }
     }
+
+    if (max_match_str)
+    {
+        token->type = TokenType::TOKEN_OPERATOR;
+        token->_operator = new TokenOperator((TokenOperatorType) max_match_enum);
+        eat(max_match_str, true);
+    }
+
     return token;
 }
 
@@ -221,17 +239,13 @@ Token *Lexer::getNumberLiteral(Token *token)
 {
     if (isDigit())
     {
-        char *buffer = new char[256]; // !!! size !!!
-        size_t bytes_read = 0;
-        while (isDigit() || match("."))
-        {
-            buffer[bytes_read++] = current_char;
-            nextChar();
-        }
-        buffer[bytes_read] = 0;
+        auto condition = [] (char c) { return isdigit(c) || c == '.' || c == '-' || c == 'e'; };
+        size_t capacity = countUntil(condition);
+        char *buffer = new char[capacity + 1];
+        readUntil(buffer, condition);
 
         token->type = TokenType::TOKEN_LITERAL;
-        if (string_contains(buffer, '.'))
+        if (string_contains(buffer, '.') || string_contains(buffer, 'e'))
         {
             auto result = atof(buffer);
             token->literal = new TokenLiteral(result);
@@ -251,16 +265,21 @@ Token *Lexer::getCharLiteral(Token *token)
 {
     if (match('\'') && eat('\''))
     {
-        char buffer = 0;
-        if (isAlphanumeric())
-        {
-            buffer = current_char;
-            nextChar();
-        }
-        if (!eat('\'')) return token;
+        auto condition = [] (char c) { return (bool) isalnum(c); };
+        size_t capacity = countUntil(condition);
+        char *buffer = new char[capacity + 1];
+        size_t bytes_read = readUntil(buffer, condition);
+        eat('\'', true);
 
         token->type = TokenType::TOKEN_LITERAL;
-        token->literal = new TokenLiteral(buffer);
+        if (bytes_read <= 1) token->literal = new TokenLiteral(buffer[0]);
+        else
+        {
+            token->literal = new TokenLiteral(buffer, bytes_read);
+            error_handler.assume_multichar_is_string(token);
+        }
+
+        delete[] buffer;
     }
     return token;
 }
@@ -269,15 +288,11 @@ Token *Lexer::getStringLiteral(Token *token)
 {
     if (match('\"') && eat('\"'))
     {
-        char *buffer = new char[1024]; // !!! size !!!
-        size_t bytes_read = 0;
-        while (isAlphanumeric())
-        {
-            buffer[bytes_read++] = current_char;
-            nextChar();
-        }
-        buffer[bytes_read] = 0;
-        if (!eat('\"')) return token;
+        auto condition = [] (char c) { return (bool) isalnum(c); };
+        size_t capacity = countUntil(condition);
+        char *buffer = new char[capacity + 1];
+        size_t bytes_read = readUntil(buffer, condition);
+        eat('\"', true);
 
         token->type = TokenType::TOKEN_LITERAL;
         token->literal = new TokenLiteral(buffer, bytes_read);
@@ -316,14 +331,10 @@ Token *Lexer::getIdentifier(Token *token)
 {
     if (isAlpha())
     {
-        char *buffer = new char[1024]; // !!! size !!!
-        size_t bytes_read = 0;
-        while (isAlphanumeric())
-        {
-            buffer[bytes_read++] = current_char;
-            nextChar();
-        }
-        buffer[bytes_read] = 0;
+        auto condition = [] (char c) { return (bool) isalnum(c); };
+        size_t capacity = countUntil(condition);
+        char *buffer = new char[capacity + 1];
+        size_t bytes_read = readUntil(buffer, condition);
 
         token->type = TokenType::TOKEN_IDENTIFIER;
         token->identifier = new TokenIdentifier(buffer, bytes_read);
@@ -331,6 +342,21 @@ Token *Lexer::getIdentifier(Token *token)
         delete[] buffer;
     }
     return token;
+}
+
+size_t Lexer::countUntil(bool (*condition)(char))
+{
+    size_t bytes_read = 0;
+    saveState();
+
+    while (condition(current_char) && !isNULL(current_char))
+    {
+        nextChar();
+        bytes_read++;
+    }
+
+    loadState();
+    return bytes_read;
 }
 
 size_t Lexer::countUntil(const char *until)
@@ -343,9 +369,22 @@ size_t Lexer::countUntil(const char *until)
         nextChar();
         bytes_read++;
     }
-    eat(until);
 
     loadState();
+    return bytes_read;
+}
+
+size_t Lexer::readUntil(char *buffer, bool (*condition)(char))
+{
+    size_t bytes_read = 0;
+
+    while (condition(current_char) && !isNULL(current_char))
+    {
+        buffer[bytes_read++] = current_char;
+        nextChar();
+    }
+    buffer[bytes_read] = 0;
+
     return bytes_read;
 }
 
@@ -358,29 +397,53 @@ size_t Lexer::readUntil(char *buffer, const char *until)
         buffer[bytes_read++] = current_char;
         nextChar();
     }
-    eat(until);
     buffer[bytes_read] = 0;
 
     return bytes_read;
 }
 
-bool Lexer::eat(const char *text)
+size_t Lexer::readFromUntil(char *buffer, size_t start_from, const char *until)
 {
-    if (match(text))
+    saveState();
+    location.position = start_from;
+    current_char = text[location.position];
+
+    size_t bytes_read = readUntil(buffer, until);
+
+    loadState();
+    return bytes_read;
+}
+
+int Lexer::eat(const char *expected, bool report_error)
+{
+    size_t expected_size = strlen(expected);
+
+    if (match(expected))
     {
-        for (size_t i = 0; i < strlen(text); i++)
+        for (size_t i = 0; i < expected_size; i++)
         {
             nextChar();
         }
-        return true;
+        return 1;
     }
-    else return false;
+    else if (report_error)
+    {
+        char *unexpected = new char[expected_size + 1];
+        strncpy(unexpected, text + location.position, expected_size);
+        unexpected[expected_size] = 0;
+
+        error_handler.unexpected_token(&location, expected, unexpected);
+        delete[] unexpected;
+
+        return -1;
+    }
+    else return 0;
 }
 
-bool Lexer::eat(const char ch)
+int Lexer::eat(const char ch, bool report_error)
 {
     char input[] = { ch };
-    return eat(input);
+    return eat(input, report_error);
 }
 
 bool Lexer::match(const char *text, bool whitespace_after)
@@ -393,7 +456,7 @@ bool Lexer::match(const char *text, bool whitespace_after)
     compare1[size] = 0;
 
     char *compare2 = new char[size + 1];
-    strncpy(compare2, this->text + position, size);
+    strncpy(compare2, this->text + location.position, size);
     compare2[size] = 0;
 
     bool compare_result = !strncmp(compare1, compare2, size - whitespace_after);

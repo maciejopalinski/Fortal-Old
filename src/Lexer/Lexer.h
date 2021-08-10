@@ -1,36 +1,25 @@
 #pragma once
 #include "../Token/Token.h"
 
-class LexerState
-{
-    public:
-        char *text;
-        size_t text_length = 0;
-
-        size_t position = 0;
-        size_t line = 1;
-        size_t column = 1;
-        char current_char = 0;
-};
-
-class LexerStateManager : public LexerState
-{
-    public:
-        LexerState saved_state;
-
-        void saveState();
-        void loadState();
-        void deleteState();
-};
-
-class Lexer : public LexerStateManager
+class Lexer
 {
     public:
         Lexer();
         ~Lexer();
 
+        char *text;
+        size_t text_length = 0;
+
+        Location location;
+        Location saved_location;
+        char current_char = 0;
+
+        void saveState();
+        void loadState();
+
         void loadFromFile(const char *filename);
-        void loadFromString(const char *text, size_t size);
+        void setTokenPosition(Token *token);
+        char *describeLocation(char *buffer);
 
         Token *getNextToken(Token *token);
 
@@ -56,10 +45,13 @@ class Lexer : public LexerStateManager
 
         Token *getIdentifier(Token *token);
 
+        size_t countUntil(bool (*condition)(char));
         size_t countUntil(const char *until);
+        size_t readUntil(char *buffer, bool (*condition)(char));
         size_t readUntil(char *buffer, const char *until);
-        bool eat(const char *text);
-        bool eat(const char ch);
+        size_t readFromUntil(char *buffer, size_t start_from, const char *until);
+        int eat(const char *text, bool report_error = false);
+        int eat(const char ch, bool report_error = false);
         bool match(const char *text, bool whitespace_after = false);
         bool match(const char ch, bool whitespace_after = false);
 
@@ -71,3 +63,5 @@ class Lexer : public LexerStateManager
         bool isSeparator(char input = 0);
         bool isNULL(char input);
 };
+
+extern Lexer lexer;
