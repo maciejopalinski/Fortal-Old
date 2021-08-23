@@ -15,7 +15,7 @@
 
 void test(int a, int b)
 {
-
+    a + b;
 }
 
 int main()
@@ -36,7 +36,8 @@ int main()
     1e-2
     1e20
     "test"
-    'ct'
+    't'
+    'cttttt'
     x &= (false | true)
     nullptr
 }
