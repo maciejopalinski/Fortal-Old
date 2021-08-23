@@ -49,5 +49,6 @@ void Location::clear()
 
 int Location::write(char *buffer)
 {
+    // char *buffer = new char[filename_size + 64];
     return sprintf(buffer, "%s:%li:%li", filename, line, column);
 }
