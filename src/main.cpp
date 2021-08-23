@@ -15,7 +15,6 @@ argp_option options[] =
     { "verbose", 'v', 0, 0, "Produce verbose output" },
     { "quiet", 'q', 0, 0, "Produce reduced output" },
     { "debug", 'D', 0, 0, "Produce debug output (for development)" },
-
     { "output", 'o', "FILE", 0, "Place the output into FILE" },
     { 0 }
 };
@@ -96,12 +95,17 @@ int main(int argc, char **argv)
 
     while (true)
     {
-        Token token = Token();
+        Token *token = lexer.getNextToken();
 
-        lexer.getNextToken(&token);
-        if (!token) break;
+        if (!*token)
+        {
+            delete token;
+            break;
+        }
 
-        token.debug();
+        token->debug();
+
+        delete token;
     }
 
     error_handler.log(E_EXTRA, "Exiting...\n");
