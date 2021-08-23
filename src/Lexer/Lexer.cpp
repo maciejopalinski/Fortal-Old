@@ -2,27 +2,29 @@
 #include "../ErrorHandler/ErrorHandler.h"
 #include "../Utils/Utils.h"
 
-Lexer::Lexer() {}
+Lexer::Lexer()
+{
+    location = new Location();
+    saved_location = new Location();
+}
 
 Lexer::~Lexer()
 {
     delete[] text;
+    delete location;
+    delete saved_location;
 }
 
 void Lexer::saveState()
 {
-    saved_location.line = location.line;
-    saved_location.column = location.column;
-    saved_location.position = location.position;
+    saved_location->init(location);
 }
 
 void Lexer::loadState()
 {
-    location.line = saved_location.line;
-    location.column = saved_location.column;
-    location.position = saved_location.position;
-    current_char = text[location.position];
-    saved_location.clear();
+    location->init(saved_location);
+    current_char = text[location->position];
+    saved_location->clear();
 }
 
 void Lexer::loadFromFile(const char *filename)
@@ -32,9 +34,9 @@ void Lexer::loadFromFile(const char *filename)
         error_handler.no_input_files();
     }
 
-    location.init(filename);
+    location->init(filename);
 
-    FILE *file = fopen(location.filename, "r");
+    FILE *file = fopen(location->filename, "r");
     if (!file)
     {
         error_handler.no_such_file_or_directory(filename);
@@ -55,16 +57,12 @@ void Lexer::loadFromFile(const char *filename)
 
     if (bytes_read != file_size) error_handler.file_read_error(filename);
 
-    current_char = text[location.position];
+    current_char = text[location->position];
 }
 
-void Lexer::setTokenPosition(Token *token)
+Token *Lexer::getNextToken()
 {
-    token->location->init(&location);
-}
-
-Token *Lexer::getNextToken(Token *token)
-{
+    Token *token = new Token();
     while (!isNULL(current_char))
     {
         if (isWhitespace())
@@ -73,7 +71,7 @@ Token *Lexer::getNextToken(Token *token)
             continue;
         }
 
-        setTokenPosition(token);
+        token->location->init(location);
 
         getComment(token);    if (*token) break;
         getLiteral(token);    if (*token) break;
@@ -82,7 +80,7 @@ Token *Lexer::getNextToken(Token *token)
         getKeyword(token);    if (*token) break;
         getIdentifier(token); if (*token) break;
 
-        error_handler.invalid_token(&location, current_char);
+        error_handler.invalid_token(location, current_char);
         break;
     }
     return token;
@@ -90,23 +88,23 @@ Token *Lexer::getNextToken(Token *token)
 
 void Lexer::nextChar()
 {
-    location.position++;
-    if (location.position >= text_length)
+    location->position++;
+    if (location->position >= text_length)
     {
         current_char = 0;
-        location.line = 0;
-        location.column = 0;
+        location->line = 0;
+        location->column = 0;
     }
     else
     {
         if (isNewline())
         {
-            location.line++;
-            location.column = 1;
+            location->line++;
+            location->column = 1;
         }
-        else location.column++;
+        else location->column++;
 
-        current_char = text[location.position];
+        current_char = text[location->position];
     }
 }
 
@@ -123,7 +121,7 @@ size_t Lexer::skipWhitespace()
 
 Token *Lexer::getComment(Token *token)
 {
-                 getLineComment(token);
+    if (!*token) getLineComment(token);
     if (!*token) getBlockComment(token);
     return token;
 }
@@ -221,13 +219,12 @@ Token *Lexer::getOperator(Token *token)
         token->_operator = new TokenOperator((TokenOperatorType) max_match_enum);
         eat(max_match_str, true);
     }
-
     return token;
 }
 
 Token *Lexer::getLiteral(Token *token)
 {
-                 getNumberLiteral(token);
+    if (!*token) getNumberLiteral(token);
     if (!*token) getCharLiteral(token);
     if (!*token) getStringLiteral(token);
     if (!*token) getBoolLiteral(token);
@@ -247,12 +244,12 @@ Token *Lexer::getNumberLiteral(Token *token)
         token->type = TokenType::TOKEN_LITERAL;
         if (string_contains(buffer, '.') || string_contains(buffer, 'e'))
         {
-            auto result = atof(buffer);
+            double result = atof(buffer);
             token->literal = new TokenLiteral(result);
         }
         else
         {
-            auto result = atoll(buffer);
+            long long result = atoll(buffer);
             token->literal = new TokenLiteral(result);
         }
 
@@ -405,8 +402,8 @@ size_t Lexer::readUntil(char *buffer, const char *until)
 size_t Lexer::readFromUntil(char *buffer, size_t start_from, const char *until)
 {
     saveState();
-    location.position = start_from;
-    current_char = text[location.position];
+    location->position = start_from;
+    current_char = text[location->position];
 
     size_t bytes_read = readUntil(buffer, until);
 
@@ -429,10 +426,10 @@ int Lexer::eat(const char *expected, bool report_error)
     else if (report_error)
     {
         char *unexpected = new char[expected_size + 1];
-        strncpy(unexpected, text + location.position, expected_size);
+        strncpy(unexpected, text + location->position, expected_size);
         unexpected[expected_size] = 0;
 
-        error_handler.unexpected_token(&location, expected, unexpected);
+        error_handler.unexpected_token(location, expected, unexpected);
         delete[] unexpected;
 
         return -1;
@@ -456,7 +453,7 @@ bool Lexer::match(const char *text, bool whitespace_after)
     compare1[size] = 0;
 
     char *compare2 = new char[size + 1];
-    strncpy(compare2, this->text + location.position, size);
+    strncpy(compare2, this->text + location->position, size);
     compare2[size] = 0;
 
     bool compare_result = !strncmp(compare1, compare2, size - whitespace_after);

@@ -10,18 +10,16 @@ class Lexer
         char *text;
         size_t text_length = 0;
 
-        Location location;
-        Location saved_location;
+        Location *location;
+        Location *saved_location;
         char current_char = 0;
 
         void saveState();
         void loadState();
 
         void loadFromFile(const char *filename);
-        void setTokenPosition(Token *token);
-        char *describeLocation(char *buffer);
 
-        Token *getNextToken(Token *token);
+        Token *getNextToken();
 
         void nextChar();
         size_t skipWhitespace();
