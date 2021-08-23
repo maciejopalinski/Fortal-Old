@@ -141,7 +141,7 @@ void ErrorHandler::assume_multichar_is_string(Token *token)
         (
             E_WARN,
             token->location,
-            "assuming multi-character character literal meant to be a string literal\n"
+            "assuming multi-character character literal to be a string literal\n"
         );
     }
 }
