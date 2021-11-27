@@ -29,7 +29,7 @@ class TokenLiteral : public TokenHasType<TokenLiteralType>
         {
             long long value_int;
             double value_double;
-            const char *value_string;
+            char *value_string;
         };
 
     public:
@@ -46,21 +46,39 @@ class TokenLiteral : public TokenHasType<TokenLiteralType>
 
         void setValue(long long v) { value_int = v; }
         void setValue(double v) { value_double = v; }
-        void setValue(const char *v) { value_string = v; }
+        void setValue(const char* v)
+        {
+            value_string = new char[strlen(v) + 1];
+            strcpy(value_string, v);
+        }
 
         long long getValue(long long) { return value_int; }
         double getValue(double) { return value_double; }
-        const char *getValue(const char *) { return value_string; }
+        char *getValue(string) { return value_string; }
 
         bool isNULL() { return is_null; }
         void setNULL(bool null) { is_null = null; }
 
+        string getValueString()
+        {
+            if (isNULL()) return "null";
+
+            auto type = getType();
+            if (type == TOKEN_LITERAL_INT) return format("%lld", getValue((long long) 1));
+            if (type == TOKEN_LITERAL_DOUBLE) return format("%f", getValue(0.0f));
+            if (type == TOKEN_LITERAL_CHAR) return format("'%c'", getValue((long long) 1));
+            if (type == TOKEN_LITERAL_STRING) return format("'%s'", getValue(""));
+            if (type == TOKEN_LITERAL_BOOL) return getValue((long long) 1) ? "true" : "false";
+            return "<error>";
+        }
+
         string getDebug()
         {
             return format(
-                "%s(type='%s')",
+                "%s(type='%s', value=%s)",
                 getTokenTypeString(),
-                getTypeString(getType()).c_str()
+                getTypeString(getType()).c_str(),
+                getValueString().c_str()
             );
         }
 
