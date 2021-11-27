@@ -104,4 +104,14 @@ class ErrorHandler
                 unexpected.c_str(), expected.c_str()
             );
         }
+
+        void log_empty_character_literal(Location location)
+        {
+            logLocation
+            (
+                E_WARN,
+                location,
+                "empty string literal is not allowed, assuming it is integer 0"
+            );
+        }
 };

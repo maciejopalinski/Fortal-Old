@@ -299,7 +299,9 @@ class Lexer
                 }
                 else
                 {
-                    return nullptr;
+                    error_handler.log_empty_character_literal(location);
+                    token = new TokenLiteral(TOKEN_LITERAL_INT);
+                    token->setValue((long long) 0);
                 }
             }
             else if (expect("true", true) || expect("false", true))
