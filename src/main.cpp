@@ -101,6 +101,8 @@ int main(int argc, char **argv)
             token->location,
             token->getDebug().c_str()
         );
+
+        delete token;
     }
 
     error_handler.log(E_EXTRA, "Exiting...");
