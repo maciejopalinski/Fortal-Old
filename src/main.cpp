@@ -2,9 +2,10 @@
 #include <bits/stdc++.h>
 #include "ErrorHandler/ErrorHandler.hpp"
 #include "Lexer/Lexer.hpp"
+#include "Version.h"
 using namespace std;
 
-const char *argp_program_version = "Fortal 1.0.0";
+const char *argp_program_version = "Fortal " FORTAL_VERSION;
 const char *argp_program_bug_address = "https://github.com/PoProstuMieciek/Fortal/issues";
 
 const char *argp_program_doc = "Fortal -- compiler for C/C++ programming language";
