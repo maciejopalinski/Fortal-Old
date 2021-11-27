@@ -1,8 +1,8 @@
 #include <argp.h>
-#include "ErrorHandler/ErrorHandler.h"
-#include "Token/Token.h"
-#include "Lexer/Lexer.h"
-#include "Utils/Utils.h"
+#include <bits/stdc++.h>
+#include "ErrorHandler/ErrorHandler.hpp"
+#include "Lexer/Lexer.hpp"
+using namespace std;
 
 const char *argp_program_version = "Fortal 1.0.0";
 const char *argp_program_bug_address = "https://github.com/PoProstuMieciek/Fortal/issues";
@@ -21,7 +21,7 @@ argp_option options[] =
 
 struct arguments
 {
-    const char *args[16] = { 0 };
+    const char *args[16] = { "" };
     ReportingLevel reporting_level;
     const char *output_file;
 };
@@ -68,46 +68,41 @@ error_t parse_opt(int key, char *value, argp_state *state)
 
 argp config = { options, parse_opt, argp_args_doc, argp_program_doc };
 
-ErrorHandler error_handler = ErrorHandler();
-Lexer lexer = Lexer();
+ErrorHandler error_handler;
+Lexer lexer(error_handler);
 
 int main(int argc, char **argv)
 {
     arguments args;
-
-    // Default values.
     args.reporting_level = E_DEFAULT;
     args.output_file = nullptr;
-
     argp_parse(&config, argc, argv, 0, 0, &args);
 
     error_handler.setReportingLevel(args.reporting_level);
-    lexer.loadFromFile(args.args[0]);
 
     error_handler.log
     (
         E_EXTRA,
-        "args[0] = '%s', reporting_level = %i, output = '%s'\n",
+        "args[0] = '%s', reporting_level = %i, output = '%s'",
         args.args[0],
         args.reporting_level,
         args.output_file
     );
 
-    while (true)
+    lexer.loadFromFile(
+        string(args.args[0])
+    );
+
+    TokenBase *token;
+    while ((token = lexer.getNextToken()))
     {
-        Token *token = lexer.getNextToken();
-
-        if (!*token)
-        {
-            delete token;
-            break;
-        }
-
-        token->debug();
-
-        delete token;
+        error_handler.logLocation(
+            E_DEBUG,
+            token->location,
+            token->getDebug().c_str()
+        );
     }
 
-    error_handler.log(E_EXTRA, "Exiting...\n");
+    error_handler.log(E_EXTRA, "Exiting...");
     return 0;
 }
