@@ -27,6 +27,9 @@ run: $(TARGET)
 test: $(TEST_TARGET)
 	$(TEST_TARGET)
 
+format: $(CPP_SRC_FILES) $(TEST_SRC_FILES) $(CPP_HEADERS)
+	clang-format -i $^
+
 $(TARGET): $(CPP_OBJ_FILES)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
