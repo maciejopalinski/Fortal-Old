@@ -1,10 +1,10 @@
 #pragma once
-#include <string>
 #include <memory>
+#include <string>
 using namespace std;
 
-template<class ... Args>
-string format(const char *format, Args ... args)
+template<class... Args>
+string format(const char *format, Args... args)
 {
     int size = snprintf(nullptr, 0, format, args...);
 

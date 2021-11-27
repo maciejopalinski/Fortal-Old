@@ -5,12 +5,12 @@
 class TokenBase
 {
     public:
-        Location location;
+    Location location;
 
-        virtual ~TokenBase() {}
+    virtual ~TokenBase() {}
 
-        virtual TokenType getTokenType() = 0;
-        virtual const char *getTokenTypeString() = 0;
+    virtual TokenType getTokenType()         = 0;
+    virtual const char *getTokenTypeString() = 0;
 
-        virtual string getDebug() = 0;
+    virtual string getDebug() = 0;
 };

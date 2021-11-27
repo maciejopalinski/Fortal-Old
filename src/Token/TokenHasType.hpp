@@ -5,30 +5,21 @@ template<class T>
 class TokenHasType : public TokenBase
 {
     private:
-        T type;
+    T type;
 
     protected:
-        static vector<string> lexer_matches;
+    static vector<string> lexer_matches;
 
     public:
-        TokenHasType(T type)
-        {
-            this->type = type;
-        }
+    TokenHasType(T type) { this->type = type; }
 
-        T getType()
-        {
-            return this->type;
-        }
+    T getType() { return this->type; }
 
-        void setType(T type)
-        {
-            this->type = type;
-        }
+    void setType(T type) { this->type = type; }
 
-        virtual string getTypeString(T type) = 0;
+    virtual string getTypeString(T type) = 0;
 
-        static vector<string> getLexerMatches();
-        static T getLexerTypeFromMatch(string match);
-        static bool getLexerWhitespaceAfter();
+    static vector<string> getLexerMatches();
+    static T getLexerTypeFromMatch(string match);
+    static bool getLexerWhitespaceAfter();
 };
