@@ -35,6 +35,11 @@ class TokenLiteral : public TokenHasType<TokenLiteralType>
     public:
         TokenLiteral(TokenLiteralType type) : TokenHasType(type) {}
 
+        ~TokenLiteral()
+        {
+            if (getType() == TOKEN_LITERAL_STRING) delete[] value_string;
+        }
+
         TokenType getTokenType() { return TOKEN_LITERAL; }
         const char *getTokenTypeString() { return "TokenLiteral"; }
         string getTypeString(TokenLiteralType type) { return TokenLiteralType_strings[type]; }
