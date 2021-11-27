@@ -2,6 +2,9 @@
 #include "../Location/Location.hpp"
 #include "TokenType.hpp"
 
+#include <bits/stdc++.h>
+using namespace std;
+
 class TokenBase
 {
     public:
