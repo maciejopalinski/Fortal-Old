@@ -9,7 +9,10 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/fortal.o",
-            "args": [],
+            "args": [
+                "${input:filename}",
+                "-D"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -24,6 +27,20 @@
             ],
             "preLaunchTask": "g++ - build",
             "miDebuggerPath": "/usr/bin/gdb"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "filename",
+            "description": "path to test file",
+            "type": "pickString",
+            "options": [
+                "test/numbers.f",
+                "test/test.f",
+                "test/syntax.f",
+                "test/literals.f"
+            ],
+            "default": "test/test.f"
         }
     ]
 }
