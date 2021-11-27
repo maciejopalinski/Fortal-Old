@@ -36,7 +36,9 @@
             "type": "pickString",
             "options": [
                 "test/numbers.f",
-                "test/test.f"
+                "test/test.f",
+                "test/syntax.f",
+                "test/literals.f"
             ],
             "default": "test/test.f"
         }
