@@ -349,7 +349,9 @@ class Lexer
             bool result = !strncmp(compare1.c_str(), compare2.c_str(), size - whitespace_after);
             if (whitespace_after)
             {
-                char c = compare2[size - 1];
+                char c = compare2[compare2.size() - 1];
+                if (compare2.size() < compare1.size()) c = 0;
+
                 result &= (isWhitespace(c) || isSeparator(c) || isBracket(c) || isNewline(c) || isNULL(c));
             }
             return result;
