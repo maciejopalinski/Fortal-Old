@@ -37,7 +37,8 @@ enum TokenOperatorType
     TOKEN_OPERATOR_CMP_LESS_EQ,
     TOKEN_OPERATOR_CMP_GREAT_EQ,
     TOKEN_OPERATOR_ACCESS_DEREFERENCE,
-    TOKEN_OPERATOR_ACCESS_ADDRESS_OF
+    TOKEN_OPERATOR_ACCESS_ADDRESS_OF,
+    TOKEN_OPERATOR_ARROW
 };
 
 const char *TokenOperatorType_strings[] = {
@@ -75,8 +76,11 @@ const char *TokenOperatorType_strings[] = {
     "TOKEN_OPERATOR_CMP_LESS_EQ",
     "TOKEN_OPERATOR_CMP_GREAT_EQ",
     "TOKEN_OPERATOR_ACCESS_DEREFERENCE",
-    "TOKEN_OPERATOR_ACCESS_ADDRESS_OF"
+    "TOKEN_OPERATOR_ACCESS_ADDRESS_OF",
+    "TOKEN_OPERATOR_ARROW"
 };
+
+// TODO: fix lexer: `b - 1` is parsed as `IDENTIFIER LITERAL LITERAL`, should be `IDENTIFIER OPERATOR LITERAL`, how is C++ doing it?
 
 class TokenOperator : public TokenHasType<TokenOperatorType>
 {
@@ -114,5 +118,5 @@ class TokenOperator : public TokenHasType<TokenOperatorType>
 };
 
 vector<string> TokenOperator::lexer_matches = {
-    "=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", "++", "--", "+", "-", "*", "/", "%", "~", "&", "|", "^", "<<", ">>", "!", "&&", "||", "==", "!=", "<", ">", "<=", ">=", "*", "&"
+    "=", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", "++", "--", "+", "-", "*", "/", "%", "~", "&", "|", "^", "<<", ">>", "!", "&&", "||", "==", "!=", "<", ">", "<=", ">=", "*", "&", "=>"
 };
