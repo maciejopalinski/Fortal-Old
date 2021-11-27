@@ -1,7 +1,7 @@
 /*
     this is a multiline comment
 
-
+    also known as a
     block comment
 */
 
@@ -10,17 +10,16 @@
 //  this is a single line comment
 //    this is a single line comment
 //      this is a single line comment
-//        this is a single line comment
-//          this is a single line comment
 
 void test(int a, int b)
 {
-    a + b;
+    a += b;
 }
 
 int main()
 {
     int y;
+    if (y != y) return y;
     int x = 0 + 0;
     if (x + 2 == 3) return 1;
     else return 0;
@@ -39,6 +38,6 @@ int main()
     't'
     'cttttt'
     x &= (false | true)
-    nullptr
+    return null;
 }
 int
