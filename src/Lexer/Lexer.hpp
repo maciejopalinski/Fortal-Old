@@ -29,7 +29,7 @@ class Lexer
         {
             if (filename.length() < 1)
             {
-                error_handler.no_input_files();
+                error_handler.throw_no_input_files();
             }
 
             location.filename = filename;
@@ -37,8 +37,8 @@ class Lexer
             FILE *file = fopen(filename.c_str(), "r");
             if (!file)
             {
-                error_handler.no_such_file_or_directory(filename);
-                error_handler.no_input_files();
+                error_handler.log_no_such_file_or_directory(filename);
+                error_handler.throw_no_input_files();
             }
 
             // get file size
@@ -122,7 +122,7 @@ class Lexer
                 if ((token = getBracket())) break;
                 if ((token = getIdentifier())) break;
 
-                error_handler.invalid_token(location, current_char);
+                error_handler.throw_invalid_token(location, current_char);
                 break;
             }
 
@@ -329,7 +329,7 @@ class Lexer
             {
                 string unexpected = text.substr(location.position, expected.size());
 
-                error_handler.unexpected_token(
+                error_handler.log_unexpected_token(
                     location,
                     expected,
                     unexpected

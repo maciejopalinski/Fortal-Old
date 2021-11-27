@@ -71,18 +71,18 @@ class ErrorHandler
             exit(exit_code);
         }
 
-        void no_input_files()
+        void throw_no_input_files()
         {
             log(E_FATAL, "No input files");
             terminate_compilation();
         }
 
-        void no_such_file_or_directory(string filename)
+        void log_no_such_file_or_directory(string filename)
         {
             log(E_FATAL, "%s: No such file or directory", filename.c_str());
         }
 
-        void invalid_token(Location location, const char c)
+        void throw_invalid_token(Location location, const char c)
         {
             logLocation
             (
@@ -94,7 +94,7 @@ class ErrorHandler
             terminate_compilation();
         }
 
-        void unexpected_token(Location location, string expected, string unexpected)
+        void log_unexpected_token(Location location, string expected, string unexpected)
         {
             logLocation
             (
