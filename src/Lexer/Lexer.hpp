@@ -338,11 +338,10 @@ class Lexer
             return false;
         }
 
-        bool expect(string expected, bool whitespace_after = false)
+        bool expect(string compare1, bool whitespace_after = false)
         {
-            size_t size = expected.length() + whitespace_after;
+            size_t size = compare1.length() + whitespace_after;
 
-            string compare1 = expected.substr(0, size);
             if (whitespace_after) compare1 += ' ';
 
             string compare2 = text.substr(location.position, size);
