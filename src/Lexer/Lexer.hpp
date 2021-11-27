@@ -290,7 +290,7 @@ class Lexer
                 if (str.size() == 1)
                 {
                     token = new TokenLiteral(TOKEN_LITERAL_CHAR);
-                    token->setValue(str.c_str());
+                    token->setValue((long long) str[0]);
                 }
                 else if (str.size() > 1)
                 {
