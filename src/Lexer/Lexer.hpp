@@ -360,10 +360,10 @@ class Lexer
         bool isDigit(char c) { return isdigit(c); }
 
         bool isAlphanumeric() { return isAlphanumeric(current_char); }
-        bool isAlphanumeric(char c) { return isalnum(c); }
+        bool isAlphanumeric(char c) { return isalnum(c) || c == '_'; }
 
         bool isAlpha() { return isAlpha(current_char); }
-        bool isAlpha(char c) { return isalpha(c); }
+        bool isAlpha(char c) { return isalpha(c) || c == '_'; }
 
         bool isWhitespace() { return isWhitespace(current_char); }
         bool isWhitespace(char c) { return isspace(c); }
