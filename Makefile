@@ -1,9 +1,9 @@
-TARGET := ./bin/fortal.o
-TEST_TARGET := ./bin/test.o
+TARGET := ./bin/fortal
+TEST_TARGET := ./bin/test
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
+CXXFLAGS := -std=c++17 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
 LDFLAGS := 
-ARGS := test/test.f -D
+ARGS := -D test/fortal/*.f
 
 SRC_DIR := ./src
 TEST_DIR := ./test
@@ -13,7 +13,7 @@ TMP_DIR := ./tmp
 
 CPP_SRC_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
 CPP_OBJ_FILES := $(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/src/%.o, $(CPP_SRC_FILES))
-CPP_HEADERS := $(shell find $(SRC_DIR) -type f -name '*.h' -or -name '*.hpp')
+CPP_HEADERS := $(shell find $(SRC_DIR) -type f -name '*.h')
 
 GTEST_LDFLAGS := -lgtest -pthread
 TEST_SRC_FILES := $(shell find $(TEST_DIR) -type f -name '*.cpp')
@@ -28,7 +28,7 @@ test: $(TEST_TARGET)
 	$(TEST_TARGET)
 
 format: $(CPP_SRC_FILES) $(TEST_SRC_FILES) $(CPP_HEADERS)
-	clang-format -i $^
+	astyle --project=.astylerc $^
 
 $(TARGET): $(CPP_OBJ_FILES)
 	@mkdir -p $(dir $@)
