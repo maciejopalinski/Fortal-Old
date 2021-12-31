@@ -1,0 +1,63 @@
+#pragma once
+#include "TokenHasKind.h"
+
+enum TokenOperatorType
+{
+    TOKEN_OPERATOR_ARITH_ADD,
+    TOKEN_OPERATOR_ARITH_SUB,
+    TOKEN_OPERATOR_ARITH_MULT,
+    TOKEN_OPERATOR_ARITH_DIV,
+    TOKEN_OPERATOR_ARITH_MOD,
+    TOKEN_OPERATOR_ARITH_BIT_NOT,
+    TOKEN_OPERATOR_ARITH_BIT_OR,
+    TOKEN_OPERATOR_ARITH_BIT_AND,
+    TOKEN_OPERATOR_ARITH_BIT_XOR,
+    TOKEN_OPERATOR_ARITH_BIT_LSHIFT,
+    TOKEN_OPERATOR_ARITH_BIT_RSHIFT,
+    TOKEN_OPERATOR_ARITH_INCR,
+    TOKEN_OPERATOR_ARITH_DECR,
+    TOKEN_OPERATOR_ASSIGN,
+    TOKEN_OPERATOR_ASSIGN_ADD,
+    TOKEN_OPERATOR_ASSIGN_SUB,
+    TOKEN_OPERATOR_ASSIGN_MULT,
+    TOKEN_OPERATOR_ASSIGN_DIV,
+    TOKEN_OPERATOR_ASSIGN_MOD,
+    TOKEN_OPERATOR_ASSIGN_BIT_NOT,
+    TOKEN_OPERATOR_ASSIGN_BIT_OR,
+    TOKEN_OPERATOR_ASSIGN_BIT_AND,
+    TOKEN_OPERATOR_ASSIGN_BIT_XOR,
+    TOKEN_OPERATOR_ASSIGN_BIT_LSHIFT,
+    TOKEN_OPERATOR_ASSIGN_BIT_RSHIFT,
+    TOKEN_OPERATOR_CMP_EQ,
+    TOKEN_OPERATOR_CMP_NEQ,
+    TOKEN_OPERATOR_CMP_GREAT,
+    TOKEN_OPERATOR_CMP_LESS,
+    TOKEN_OPERATOR_CMP_GREAT_EQ,
+    TOKEN_OPERATOR_CMP_LESS_EQ,
+    TOKEN_OPERATOR_LOGIC_NOT,
+    TOKEN_OPERATOR_LOGIC_OR,
+    TOKEN_OPERATOR_LOGIC_AND,
+    TOKEN_OPERATOR_LOGIC_TERNARY,
+    TOKEN_OPERATOR_MISC_AT,
+    TOKEN_OPERATOR_MISC_HASH,
+    TOKEN_OPERATOR_MISC_DOLLAR
+};
+
+class TokenOperator : public TokenHasKind<TokenOperatorType>
+{
+    public:
+        static const vector<string> lexer_matches;
+        static const bool lexer_whitespace_after = false;
+
+        TokenOperator(TokenOperatorType kind);
+
+        TokenType getType()
+        {
+            return TOKEN_OPERATOR;
+        }
+
+        static string getPrintableKindString(TokenOperatorType kind);
+        string getPrintableKindString();
+
+        static TokenOperatorType getLexerTypeFromMatch(string match);
+};
