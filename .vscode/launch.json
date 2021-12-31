@@ -8,10 +8,10 @@
             "name": "g++ - build and debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/fortal.o",
+            "program": "${workspaceFolder}/bin/fortal",
             "args": [
-                "${input:filename}",
-                "-D"
+                "-D",
+                "${input:filename}"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -25,7 +25,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "g++ - build",
+            "preLaunchTask": "build",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ],
@@ -35,12 +35,12 @@
             "description": "path to test file",
             "type": "pickString",
             "options": [
-                "test/numbers.f",
-                "test/test.f",
-                "test/syntax.f",
-                "test/literals.f"
+                "test/fortal/*.f",
+                "test/fortal/object.f",
+                "test/fortal/procedural.f",
+                "test/fortal/test.f"
             ],
-            "default": "test/test.f"
+            "default": "test/fortal/*.f"
         }
     ]
 }
