@@ -47,6 +47,7 @@ $(OBJ_DIR)/test/%.o: $(TEST_DIR)/%
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 memcheck: $(TMP_DIR)/memcheck.out
+	grep -q "no leaks are possible" $<
 
 $(TMP_DIR)/memcheck.out: $(TARGET)
 	@mkdir -p $(TMP_DIR)
