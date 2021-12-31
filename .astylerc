@@ -1,0 +1,11 @@
+indent-namespaces
+indent-classes
+indent-switches
+indent-col1-comments
+
+pad-oper
+pad-header
+
+align-pointer=name
+
+suffix=none

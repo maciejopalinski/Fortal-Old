@@ -2,7 +2,7 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "g++ - build",
+            "label": "build",
             "command": "make",
             "args": [
                 "all"

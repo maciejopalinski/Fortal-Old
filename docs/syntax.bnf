@@ -1,0 +1,392 @@
+CompilationUnit:
+    [ PackageDefinition ]
+    { ImportStatement }
+    { Definition }
+
+PackageDefinition:
+    Keyword(PACKAGE)
+    PackageIdentifier
+    Separator(SEMICOLON)
+
+PackageIdentifier
+    QualifiedRawIdentifier [ Separator(DOT) Operator(MULT) ]
+
+QualifiedRawIdentifier:
+    RawIdentifier
+    {
+        Separator(DOT)
+        RawIdentifier
+    }
+
+QualifiedIdentifier:
+    Identifier
+    {
+        Separator(DOT)
+        Identifier
+    }
+
+Identifier:
+    RawIdentifier [ TemplateArguments ]
+
+TemplateArguments:
+    Brace(TRIANGLE_L)
+    TemplateArgument
+    {
+        Separator(COMMA)
+        TemplateArgument
+    }
+
+TemplateArgument:
+    (
+        Identifier
+        |
+        (
+            Operator(QUESTION_MARK)
+            Keyword(EXTENDS)
+            Identifier
+        )
+    )
+
+RawIdentifier:
+    Regex("A-Za-z\_") { Regex("A-Za-z0-9\_") }
+
+ImportStatement:
+    Keyword(IMPORT)
+    PackageIdentifier
+    Separator(SEMICOLON)
+
+Definition:
+    { Decorator }
+    { Modifier }
+    (
+        ClassDefinition
+        | FunctionDefinition
+        | VariableDefinition
+        | EnumDefinition
+        | AliasDefintion
+    )
+    [ Separator(SEMICOLON) ]
+
+Modifier:
+    (
+        AccessModifier
+        | ClassScopeModifier
+        | InheritanceModifier
+        | LinkerModifier
+    )
+
+ClassScopeModifier:
+    (
+        Keyword(STATIC)
+    )
+
+InheritanceModifier:
+    (
+        Keyword(ABSTRACT)
+        | Keyword(FINAL)
+    )
+
+LinkerModifier:
+    (
+        Keyword(ENTRYPOINT)
+        | Keyword(NATIVE)
+    )
+
+AccessModifier:
+    (
+        Keyword(PUBLIC)
+        | Keyword(PROTECTED)
+        | Keyword(PRIVATE)
+    )
+
+Decorator:
+    Operator(AT)
+    FunctionCall
+
+FunctionDefinition:
+    { Modifier }
+    DataType
+    Identifier
+    Brace(PAREN_L)
+    FunctionParameterList
+    Brace(PAREN_R)
+    [
+        Brace(CURLY_L)
+        Statement
+        Brace(CURLY_R)
+    ]
+    [ Separator(SEMICOLON) ]
+
+VariableDefinition:
+    { Modifier }
+    DataType
+    RawIdentifier
+    [
+        Operator(ASSIGN)
+        Statement
+    ]
+    Separator(SEMICOLON)
+
+AliasDefintion:
+    Keyword(ALIAS)
+    Identifier
+    Operator(ASSIGN)
+    Identifier
+
+ClassDefinition:
+    { Modifier }
+    Keyword(CLASS)
+    Identifier
+    [
+        Keyword(EXTENDS)
+        IdentifierList
+    ]
+    Brace(CURLY_L)
+    { ClassMemberDefinition }
+    Brace(CURLY_R)
+    [ Separator(SEMICOLON) ]
+
+IdentifierList:
+    Identifier
+    {
+        Separator(COMMA)
+        Identifier
+    }
+
+ClassMemberDefinition:
+    (
+        FunctionDefinition
+        | VariableDefinition
+        | EnumDefinition
+    )
+
+FunctionParameterList:
+    [
+        FunctionParameter
+        {
+            Separator(COMMA)
+            FunctionParameter
+        }
+    ]
+
+FunctionParameter:
+    VariableDefinition
+
+EnumDefinition:
+    Keyword(ENUM)
+    BRACE(CURLY_L)
+    EnumBody
+    Brace(CURLY_R)
+
+EnumBody:
+    [ EnumEntries ]
+
+EnumEntries:
+    (
+        EnumEntry
+        |
+        (
+            EnumEntries
+            Separator(COMMA)
+            EnumEntry
+        )
+    )
+
+EnumEntry:
+    RawIdentifier
+    [
+        Operator(ASSIGN)
+        Literal(INTEGER)
+    ]
+
+Literal:
+    (
+        Literal(INTEGER)
+        | Literal(FLOAT)
+        | Literal(CHAR)
+        | Literal(STRING)
+        | Literal(BOOL)
+        | Literal(NULL)
+    )
+
+Statement:
+    (
+        Expression
+        | Scope
+        | IfStatement
+        | SwitchStatement
+        | Loop
+        | FlowControlStatement
+        | TryStatement
+        | Separator(SEMICOLON)
+    )
+
+Scope:
+    Brace(CURLY_L)
+    { Statement }
+    Brace(CURLY_R)
+
+IfStatement:
+    Keyword(IF)
+    Brace(PAREN_L)
+    Expression
+    Brace(PAREN_R)
+    Statement
+    [
+        Keyword(ELSE)
+        Statement
+    ]
+
+SwitchStatement:
+    Keyword(SWITCH)
+    Brace(CURLY_L)
+    { CaseDefinition }
+    [ DefaultCaseDefintion ]
+    Brace(CURLY_R)
+
+CaseDefinition:
+    Keyword(CASE)
+    Expression
+    Separator(COLON)
+    [ Statement ]
+
+DefaultCaseDefintion:
+    Keyword(DEFAULT)
+    Separator(COLON)
+    [ Statement ]
+
+Loop:
+    (
+        ForLoop
+        WhileLoop
+        DoWhileLoop
+    )
+
+ForLoop:
+    Keyword(FOR)
+    Brace(PAREN_L)
+    ForLoopOptions
+    Brace(PAREN_R)
+    Statement
+
+ForLoopOptions:
+    Statement
+    Expression
+    Statement
+
+WhileLoop:
+    Keyword(WHILE)
+    Brace(PAREN_L)
+    Expression
+    Brace(PAREN_R)
+    Statement
+
+DoWhileLoop:
+    Keyword(DO)
+    Statement
+    Keyword(WHILE)
+    Brace(PAREN_L)
+    Expression
+    Brace(PAREN_R)
+    Separator(SEMICOLON)
+
+FlowControlStatement:
+    (
+        BreakStatement
+        | ContinueStatement
+        | ReturnStatement
+        | ThrowStatement
+    )
+
+BreakStatement:
+    Keyword(BREAK)
+    Separator(SEMICOLON)
+
+ContinueStatement:
+    Keyword(CONTINUE)
+    Separator(SEMICOLON)
+
+ReturnStatement:
+    Keyword(RETURN)
+    [ Expression ]
+    Separator(SEMICOLON)
+
+ThrowStatement:
+    Keyword(THROW)
+    Expression
+    Separator(SEMICOLON)
+
+TryStatement:
+    Keyword(TRY)
+    Statement
+    { CatchStatement }
+    [ FinallyStatement ]
+
+CatchStatement:
+    Keyword(CATCH)
+    Brace(PAREN_L)
+    Identifier
+    RawIdentifier
+    Brace(PAREN_R)
+    Statement
+
+FinallyStatement:
+    Keyword(FINALLY)
+    Statement
+
+Expression:
+    (
+        Literal
+        | Identifier
+        | FunctionCall
+        | ParenExpression
+        | BinaryExpression
+        | UnaryExpression
+        | PrefixExpression
+        | PostfixExpression
+        | TernaryExpression
+    )
+
+FunctionCall:
+    RawIdentifier
+    Brace(PAREN_L)
+    ArgumentList
+    Brace(PAREN_R)
+
+ArgumentList:
+    [
+        Expression
+        {
+            Separator(COMMA)
+            Expression
+        }
+    ]
+
+ParenExpression:
+    Brace(PAREN_L)
+    Expression
+    Brace(PAREN_R)
+
+BinaryExpression:
+    Expression
+    BinaryOperator
+    Expression
+
+UnaryExpression:
+    UnaryOperator
+    Expression
+
+PrefixExpression:
+    PrefixOperator
+    Expression
+
+PostfixExpression:
+    Expression
+    PostfixOperator
+
+TernaryExpression:
+    Expression
+    Operator(QUESTION_MARK)
+    Expression
+    Separator(COLON)
+    Expression
