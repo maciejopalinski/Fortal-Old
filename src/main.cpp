@@ -1,35 +1,37 @@
-#include "ErrorHandler/ErrorHandler.hpp"
-#include "Lexer/Lexer.hpp"
-#include "Version.h"
-
 #include <argp.h>
-#include <bits/stdc++.h>
-using namespace std;
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
+
+#include "ErrorHandler/ErrorHandler.h"
+#include "Compiler/Compiler.h"
+#include "Version.h"
+#include "Package/Package.h"
 
 const char *argp_program_version     = "Fortal " FORTAL_VERSION;
 const char *argp_program_bug_address = "https://github.com/PoProstuMieciek/Fortal/issues";
 
-const char *argp_program_doc = "Fortal -- compiler for C/C++ programming language";
+const char *argp_program_doc = "Fortal -- compiler for Fortal programming language";
 const char *argp_args_doc    = "FILE...";
 
 argp_option options[] = {
-    {"verbose", 'v', 0, 0, "Produce verbose output" },
-    {  "quiet", 'q', 0, 0, "Produce reduced output" },
-    {  "debug", 'D', 0, 0, "Produce debug output (for development)" },
-    { "output", 'o', "FILE", 0, "Place the output into FILE" },
-    {        0   }
+    {"verbose", 'v', 0, 0, "Produce verbose output", 0 },
+    {  "quiet", 'q', 0, 0, "Produce reduced output", 0 },
+    {  "debug", 'D', 0, 0, "Produce debug output (for development)", 0 },
+    { "output", 'o', "FILE", 0, "Place the output into FILE", 0 },
+    0
 };
 
 struct arguments
 {
-    const char *args[16] = { "" };
+    vector<string> filenames;
     ReportingLevel reporting_level;
-    const char *output_file;
+    string output_file;
 };
 
 error_t parse_opt(int key, char *value, argp_state *state)
 {
-    const size_t required_args = 0, max_args = 8;
     arguments *args = (arguments *) state->input;
 
     switch (key)
@@ -47,17 +49,15 @@ error_t parse_opt(int key, char *value, argp_state *state)
             break;
 
         case 'o':
-            args->output_file = value;
+            args->output_file = string(value);
             break;
 
         case ARGP_KEY_ARG:
-            if (state->arg_num >= max_args) argp_usage(state); // Too many arguments
-
-            args->args[state->arg_num] = value;
+            args->filenames.push_back(string(value));
             break;
 
         case ARGP_KEY_END:
-            if (state->arg_num < required_args) argp_usage(state); // Not enough arguments
+            if (state->arg_num < 1) argp_usage(state); // Not enough arguments
             break;
 
         default:
@@ -69,35 +69,22 @@ error_t parse_opt(int key, char *value, argp_state *state)
 
 argp config = { options, parse_opt, argp_args_doc, argp_program_doc };
 
-ErrorHandler error_handler;
-Lexer lexer(error_handler);
-
 int main(int argc, char **argv)
 {
     arguments args;
     args.reporting_level = E_DEFAULT;
-    args.output_file     = nullptr;
     argp_parse(&config, argc, argv, 0, 0, &args);
 
+    ErrorHandler error_handler;
     error_handler.setReportingLevel(args.reporting_level);
 
-    error_handler.log(
-        E_EXTRA,
-        "args[0] = '%s', reporting_level = %i, output = '%s'",
-        args.args[0],
-        args.reporting_level,
-        args.output_file);
+    Compiler compiler(error_handler);
 
-    lexer.loadFromFile(string(args.args[0]));
-
-    TokenBase *token;
-    while ((token = lexer.getNextToken()))
+    for (auto filename : args.filenames)
     {
-        error_handler.logLocation(E_DEBUG, token->location, token->getDebug().c_str());
-
-        delete token;
+        compiler.addFile(filename);
     }
 
-    error_handler.log(E_EXTRA, "Exiting...");
+    compiler.compile();
     return 0;
 }
