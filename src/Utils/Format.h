@@ -1,7 +1,8 @@
 #pragma once
 #include <memory>
 #include <string>
-using namespace std;
+using std::string;
+using std::unique_ptr;
 
 template<class... Args>
 string format(const char *format, Args... args)
