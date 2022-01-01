@@ -1,7 +1,7 @@
 #pragma once
-#include "TokenHasKind.h"
-
 #include <string.h>
+
+#include "TokenHasKind.h"
 
 enum TokenLiteralType
 {
