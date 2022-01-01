@@ -64,6 +64,7 @@ class Parser
         shared_ptr<Modifiers> getModifiers();
         shared_ptr<DataType> getDataType(bool required = false);
         shared_ptr<VariableDefinition> getFunctionParameter(bool required = false);
+        vector<shared_ptr<VariableDefinition>> getFunctionParameterList();
 
         shared_ptr<PackageIdentifier> getPackageIdentifier();
         shared_ptr<PackageIdentifier> getPackageDefinition();

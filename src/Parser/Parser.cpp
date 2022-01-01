@@ -463,6 +463,26 @@ shared_ptr<VariableDefinition> Parser::getFunctionParameter(bool required)
     return def;
 }
 
+vector<shared_ptr<VariableDefinition>> Parser::getFunctionParameterList()
+{
+    vector<shared_ptr<VariableDefinition>> params;
+
+    bool expectNext = false;
+    shared_ptr<VariableDefinition> param;
+    while ((param = getFunctionParameter(expectNext)))
+    {
+        params.push_back(param);
+
+        if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COMMA))
+        {
+            expectNext = true;
+        }
+        else break;
+    }
+
+    return params;
+}
+
 shared_ptr<PackageIdentifier> Parser::getPackageIdentifier()
 {
     auto ident = make_shared<PackageIdentifier>(PackageIdentifier());
@@ -551,19 +571,7 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
 
-
-        bool expectNext = false;
-        shared_ptr<VariableDefinition> param;
-        while ((param = getFunctionParameter(expectNext)))
-        {
-            def->addParameter(param);
-
-            if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COMMA))
-            {
-                expectNext = true;
-            }
-            else break;
-        }
+        def->addParameters(getFunctionParameterList());
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
 
