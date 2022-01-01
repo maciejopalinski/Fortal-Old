@@ -586,7 +586,7 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
                 VariableDefinition(mod, datatype, ident)
             );
 
-        if (expectKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
+        if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
         {
             // TODO: default value
         }
