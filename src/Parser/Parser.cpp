@@ -458,7 +458,8 @@ shared_ptr<VariableDefinition> Parser::getFunctionParameter(bool required)
             VariableDefinition(mod, datatype, ident)
         );
 
-    // TODO: default value
+    // TODO: getExpression();
+    // def->setDefaultValue(getExpression(true));
 
     return def;
 }
@@ -530,8 +531,13 @@ shared_ptr<Definition> Parser::getDefinition()
     shared_ptr<Definition> def = nullptr;
     if ((def = getClassDefinition())) return def;
     if ((def = getFunctionOrVariableDefinition())) return def;
-    // // if ((def = getEnumDefinition())) return def;
+
+    // TODO: getEnumDefinition()
+    // if ((def = getEnumDefinition())) return def;
+
+    // TODO: getAliasDefinition()
     // if ((def = getAliasDefinition())) return def;
+
     return def;
 }
 
@@ -588,7 +594,8 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 
         if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
         {
-            // TODO: default value
+            // TODO: getExpression()
+            // def->setDefaultValue(getExpression(true));
         }
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
@@ -605,11 +612,6 @@ shared_ptr<CompilationUnit> Parser::parse()
         shared_ptr<TokenComment> comment = static_pointer_cast<TokenComment>(tokens[0]);
         if (comment->getContent() == " fortal::ignore_parser ")
         {
-            // error_handler.log(
-            //     E_EXTRA,
-            //     "Ignoring '%s'",
-            //     this->lexer->getFilename().c_str()
-            // );
             return nullptr;
         }
     }
