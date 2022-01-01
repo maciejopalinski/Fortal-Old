@@ -6,11 +6,21 @@ using std::static_pointer_cast;
 
 #include "../ErrorHandler/ErrorHandler.h"
 #include "../Lexer/Lexer.h"
+
 #include "../Package/CompilationUnit/CompilationUnit.h"
 #include "../Package/Identifier/PackageIdentifier.h"
 #include "../Package/CompilationUnit/Definition/ClassDefinition.h"
 #include "../Package/CompilationUnit/Definition/FunctionDefinition.h"
 #include "../Package/CompilationUnit/Definition/VariableDefinition.h"
+
+#include "../Package/CompilationUnit/Definition/Statement/ExpressionStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/BlockStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/IfStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/LoopStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/FlowControlStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/TryStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/CatchStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/EmptyStatement.h"
 
 class Parser
 {
@@ -38,6 +48,16 @@ class Parser
         template<class T>
         shared_ptr<TokenHasKind<T>> eatKind(TokenType token_type, T token_kind, bool report_error = false, string custom_message = "");
         shared_ptr<Token> eat(TokenType token_type, bool report_error = false, string custom_message = "");
+
+        shared_ptr<Statement> getStatement(bool required = false);
+        shared_ptr<ExpressionStatement> getExpressionStatement(bool required = false);
+        shared_ptr<BlockStatement> getBlockStatement(bool required = false);
+        shared_ptr<IfStatement> getIfStatement(bool required = false);
+        shared_ptr<LoopStatement> getLoopStatement(bool required = false);
+        shared_ptr<FlowControlStatement> getFlowControlStatement(bool required = false);
+        shared_ptr<TryStatement> getTryCatchStatement(bool required = false);
+        shared_ptr<CatchStatement> getCatchStatement(bool required = false);
+        shared_ptr<EmptyStatement> getEmptyStatement(bool required = false);
 
         shared_ptr<TokenIdentifier> getIdentifier(bool required = false, string custom_message = "");
         shared_ptr<TokenKeyword> getKeyword(bool required = false, string custom_message = "");

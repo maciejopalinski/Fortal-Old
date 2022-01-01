@@ -107,6 +107,234 @@ shared_ptr<Token> Parser::eat(TokenType token_type, bool report_error, string cu
     return nullptr;
 }
 
+shared_ptr<Statement> Parser::getStatement(bool required)
+{
+    shared_ptr<Statement> s = nullptr;
+
+    if ((s = getExpressionStatement())) return s;
+    if ((s = getBlockStatement())) return s;
+    if ((s = static_pointer_cast<Statement>(getIfStatement()))) return s;
+    if ((s = static_pointer_cast<Statement>(getLoopStatement()))) return s;
+    if ((s = getFlowControlStatement())) return s;
+    if ((s = getTryCatchStatement())) return s;
+    if ((s = getEmptyStatement())) return s;
+
+    if (!s && required)
+    {
+        // TODO: something is hacky around here, maybe should be changed
+        Location location;
+        if (!current_token) location = this->lexer->getLocation();
+        else location = current_token->location;
+
+        error_handler.throw_unexpected_token(
+            location,
+            "expected statement"
+        );
+    }
+
+    return s;
+}
+
+shared_ptr<ExpressionStatement> Parser::getExpressionStatement(bool required)
+{
+    // TODO: getExpression()
+    // return getExpression(required);
+    return required ? nullptr : nullptr;
+}
+
+shared_ptr<BlockStatement> Parser::getBlockStatement(bool required)
+{
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_L, required))
+    {
+        auto block =
+            make_shared<BlockStatement>(
+                BlockStatement()
+            );
+
+        shared_ptr<Statement> s;
+        while ((s = getStatement()))
+        {
+            block->addStatement(s);
+        }
+
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_R, true);
+
+        return block;
+    }
+    return nullptr;
+}
+
+shared_ptr<IfStatement> Parser::getIfStatement(bool required)
+{
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_IF, required))
+    {
+        auto sif =
+            make_shared<IfStatement>(
+                IfStatement()
+            );
+
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
+
+        // TODO: getExpression();
+        // sif->setCondition(getExpression());
+
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+
+        sif->setBody(getStatement(true));
+
+        return sif;
+    }
+    return nullptr;
+}
+
+shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
+{
+    StatementLoopType loop_type = (StatementLoopType) (-1);
+
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_FOR)) loop_type = STATEMENT_LOOP_FOR;
+    else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_WHILE)) loop_type = STATEMENT_LOOP_WHILE;
+    else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_DO)) loop_type = STATEMENT_LOOP_DO_WHILE;
+    else
+    {
+        if (!required) return nullptr;
+
+        // TODO: something is hacky around here, maybe should be changed
+        Location location;
+        if (!current_token) location = this->lexer->getLocation();
+        else location = current_token->location;
+
+        error_handler.throw_unexpected_token(
+            location,
+            "expected loop keyword"
+        );
+    }
+
+    auto loop =
+        make_shared<LoopStatement>(
+            LoopStatement(loop_type)
+        );
+
+    if (loop_type == STATEMENT_LOOP_DO_WHILE)
+    {
+        loop->setBody(getStatement(true));
+
+        if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_WHILE))
+        {
+            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
+
+            // TODO: getExpression();
+            // loop->setCondition(getExpression(true));
+
+            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+        }
+    }
+    else
+    {
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
+
+        if (loop_type == STATEMENT_LOOP_FOR)
+        {
+            // TODO: getExpression();
+            // loop->setForInit(getExpression());
+        }
+
+        // TODO: getExpression();
+        // loop->setCondition(getExpression(true));
+
+        if (loop_type == STATEMENT_LOOP_FOR)
+        {
+            // TODO: getExpression();
+            // loop->setForIter(getExpression());
+        }
+
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+
+        loop->setBody(getStatement(true));
+    }
+
+    return loop;
+}
+
+shared_ptr<FlowControlStatement> Parser::getFlowControlStatement(bool required)
+{
+    StatementFlowControlType flow_type = (StatementFlowControlType) (-1);
+
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_BREAK)) flow_type = STATEMENT_FLOW_CONTROL_BREAK;
+    else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CONTINUE)) flow_type = STATEMENT_FLOW_CONTROL_CONTINUE;
+    else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_RETURN)) flow_type = STATEMENT_FLOW_CONTROL_RETURN;
+    else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_THROW)) flow_type = STATEMENT_FLOW_CONTROL_THROW;
+    else
+    {
+        if (!required) return nullptr;
+
+        // TODO: something is hacky around here, maybe should be changed
+        Location location;
+        if (!current_token) location = this->lexer->getLocation();
+        else location = current_token->location;
+
+        error_handler.throw_unexpected_token(
+            location,
+            "expected flow control statement"
+        );
+    }
+
+    eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+
+    return
+        make_shared<FlowControlStatement>(
+            FlowControlStatement(flow_type)
+        );
+}
+
+shared_ptr<TryStatement> Parser::getTryCatchStatement(bool required)
+{
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_TRY, required))
+    {
+        auto stry = make_shared<TryStatement>(TryStatement());
+
+        stry->setBody(getStatement(true));
+
+        shared_ptr<CatchStatement> scatch;
+        while ((scatch = getCatchStatement()))
+        {
+            stry->addCatchBlock(scatch);
+        }
+
+        return stry;
+    }
+    return nullptr;
+}
+
+shared_ptr<CatchStatement> Parser::getCatchStatement(bool required)
+{
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CATCH, required))
+    {
+        auto scatch = make_shared<CatchStatement>(CatchStatement());
+
+        if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
+        {
+            scatch->setCatchError(getFunctionParameter(true));
+            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+        }
+
+        scatch->setBody(getStatement(true));
+
+        return scatch;
+    }
+    return nullptr;
+}
+
+shared_ptr<EmptyStatement> Parser::getEmptyStatement(bool required)
+{
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, required))
+    {
+        return
+            make_shared<EmptyStatement>(EmptyStatement());
+    }
+    return nullptr;
+}
+
 shared_ptr<TokenIdentifier> Parser::getIdentifier(bool required, string custom_message)
 {
     auto eaten = eat(TOKEN_IDENTIFIER, required, custom_message);
