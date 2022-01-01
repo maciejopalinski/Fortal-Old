@@ -575,11 +575,7 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
 
-        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_L, true);
-
-        // TODO: function body
-
-        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_R, true);
+        def->setBody(getBlockStatement(true));
 
         return def;
     }
