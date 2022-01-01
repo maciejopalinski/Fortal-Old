@@ -13,8 +13,34 @@ class Cat;
 
 // this is a comment
 
-public static entrypoint void main(String[] args) {
+public static entrypoint void main(String[] args, int32 test) {
+    for ()
+    {
+        if ()
+        {
+            try {
+            }
+            catch (Ex ex1) {
 
+            }
+            catch (Ex ex2) {
+                if ();
+                {
+                    {
+                        {
+                            {
+                                break;
+                                continue;
+                                for();
+                                do; while();
+                                while() {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-public static final int32 EXIT_CODE;
+public static final int32 EXIT_CODE = ;
