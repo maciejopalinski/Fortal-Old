@@ -15,9 +15,27 @@ void FunctionDefinition::addParameter(shared_ptr<VariableDefinition> definition)
     this->parameters.push_back(definition);
 }
 
+void FunctionDefinition::addParameters(vector<shared_ptr<VariableDefinition>> definitions)
+{
+    for (auto def : definitions)
+    {
+        addParameter(def);
+    }
+}
+
 vector<shared_ptr<VariableDefinition>> FunctionDefinition::getParameters()
 {
     return parameters;
+}
+
+shared_ptr<BlockStatement> FunctionDefinition::getBody()
+{
+    return body;
+}
+
+void FunctionDefinition::setBody(shared_ptr<BlockStatement> body)
+{
+    this->body = body;
 }
 
 string FunctionDefinition::getDebug(string indent, bool last, string custom)
@@ -37,5 +55,18 @@ string FunctionDefinition::getDebug(string indent, bool last, string custom)
 
     custom += ")";
 
-    return Definition::getDebug(indent, last, custom);
+    string output = Definition::getDebug(indent, last, custom);
+
+    if (last)
+    {
+        indent += "    ";
+    }
+    else
+    {
+        indent += "│   ";
+    }
+
+    output += body->getDebug(indent);
+
+    return output;
 }
