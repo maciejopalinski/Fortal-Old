@@ -5,15 +5,25 @@ package fortal.examples.object_oriented;
 import fortal.sth.sth2.test;
 import fortal.sth2.*;
 
-class Animal;
+class Animal {
+    void eat() {}
+}
 
-class Dog;
+class Dog extends Animal {
+    void woof() {}
+}
 
-class Cat;
+class Cat extends Animal {
+    void meow() {}
+}
+
+class Scooby extends Dog {
+    void beLoved() {}
+}
 
 // this is a comment
 
-public static entrypoint void main(String[] args, int32 test) {
+public static entrypoint void main(String[] args, int32 test) throws Exception {
     for ()
     {
         if ()
