@@ -69,7 +69,14 @@ void Parser::nextToken()
 
 bool Parser::expect(TokenType token_type, bool report_error, string custom_message)
 {
-    if (!current_token) return false;
+    if (!current_token)
+    {
+        if (report_error)
+        {
+            error_handler.throw_unexpected_eof(lexer->getLocation());
+        }
+        return false;
+    }
 
     if (current_token->getType() == token_type)
     {
