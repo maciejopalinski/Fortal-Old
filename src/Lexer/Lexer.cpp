@@ -72,23 +72,25 @@ void Lexer::nextChar(size_t amount)
         }
         return;
     }
-
-    location.position++;
-
-    if (isNewline())
+    else if (amount == 1)
     {
-        location.line++;
-        location.column = 1;
-    }
-    else location.column++;
+        location.position++;
 
-    if (location.position >= text.length())
-    {
-        current_char = 0;
-    }
-    else
-    {
-        current_char = text[location.position];
+        if (isNewline())
+        {
+            location.line++;
+            location.column = 1;
+        }
+        else location.column++;
+
+        if (location.position >= text.length())
+        {
+            current_char = 0;
+        }
+        else
+        {
+            current_char = text[location.position];
+        }
     }
 }
 
@@ -133,7 +135,7 @@ shared_ptr<TokenComment> Lexer::getComment()
         string content = text.substr(location.position, until - location.position);
         token->setContent(content);
 
-        if (!eat(content, true) || !eat("\n", true))
+        if (!(eat(content, true) && eat("\n", true)))
         {
             return nullptr;
         }
