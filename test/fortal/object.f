@@ -5,8 +5,13 @@ package fortal.examples.object_oriented;
 import fortal.sth.sth2.test;
 import fortal.sth2.*;
 
-class Animal {
+public class Animal {
     void eat() {}
+    void eat2() {}
+
+    private class Something {
+        void doSomething() {}
+    }
 }
 
 class Dog extends Animal {
