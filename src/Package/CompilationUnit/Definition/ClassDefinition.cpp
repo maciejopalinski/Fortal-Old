@@ -16,3 +16,21 @@ vector<shared_ptr<Definition>> ClassDefinition::getDefinitions()
 {
     return members;
 }
+
+vector<shared_ptr<TokenIdentifier>> ClassDefinition::getExtends()
+{
+    return extends;
+}
+
+void ClassDefinition::addExtends(vector<shared_ptr<TokenIdentifier>> extends)
+{
+    for (auto ext : extends)
+    {
+        addExtend(ext);
+    }
+}
+
+void ClassDefinition::addExtend(shared_ptr<TokenIdentifier> extend)
+{
+    extends.push_back(extend);
+}
