@@ -12,7 +12,7 @@ class ClassDefinition : public Definition
         vector<shared_ptr<TokenIdentifier>> extends;
 
     public:
-        ClassDefinition(shared_ptr<Modifiers> modifiers, shared_ptr<TokenIdentifier> identifier);
+        ClassDefinition(shared_ptr<TokenIdentifier> identifier);
 
         DefinitionType getType()
         {

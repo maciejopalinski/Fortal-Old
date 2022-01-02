@@ -17,7 +17,7 @@ class FunctionDefinition : public Definition
         shared_ptr<BlockStatement> body;
 
     public:
-        FunctionDefinition(shared_ptr<Modifiers> modifiers, shared_ptr<DataType> return_type, shared_ptr<TokenIdentifier> identifier);
+        FunctionDefinition(shared_ptr<DataType> return_type, shared_ptr<TokenIdentifier> identifier);
 
         DefinitionType getType()
         {

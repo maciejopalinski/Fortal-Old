@@ -11,7 +11,7 @@ class VariableDefinition : public Definition
         shared_ptr<Expression> default_value = nullptr;
 
     public:
-        VariableDefinition(shared_ptr<Modifiers> modifiers, shared_ptr<DataType> data_type, shared_ptr<TokenIdentifier> identifier);
+        VariableDefinition(shared_ptr<DataType> data_type, shared_ptr<TokenIdentifier> identifier);
 
         DefinitionType getType()
         {

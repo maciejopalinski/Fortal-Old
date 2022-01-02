@@ -21,10 +21,10 @@ class Definition
 {
     private:
         shared_ptr<Modifiers> modifiers;
-        shared_ptr<TokenIdentifier> identifier = nullptr;
+        shared_ptr<TokenIdentifier> identifier;
 
     public:
-        Definition(shared_ptr<Modifiers> modifiers, shared_ptr<TokenIdentifier> identifier);
+        Definition(shared_ptr<TokenIdentifier> identifier);
         virtual ~Definition();
 
         virtual DefinitionType getType() = 0;
@@ -36,7 +36,7 @@ class Definition
         const char *getPrintableTypeString();
 
         shared_ptr<Modifiers> getModifiers();
-        void setModifiers(shared_ptr<Modifiers> identifier);
+        void setModifiers(shared_ptr<Modifiers> modifiers);
 
         shared_ptr<TokenIdentifier> getIdentifier();
         void setIdentifier(shared_ptr<TokenIdentifier> identifier);

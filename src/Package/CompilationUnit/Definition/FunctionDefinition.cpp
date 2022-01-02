@@ -1,6 +1,6 @@
 #include "FunctionDefinition.h"
 
-FunctionDefinition::FunctionDefinition(shared_ptr<Modifiers> modifiers, shared_ptr<DataType> return_type, shared_ptr<TokenIdentifier> identifier) : Definition(modifiers, identifier)
+FunctionDefinition::FunctionDefinition(shared_ptr<DataType> return_type, shared_ptr<TokenIdentifier> identifier) : Definition(identifier)
 {
     this->return_type = return_type;
 }

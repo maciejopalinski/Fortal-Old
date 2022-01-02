@@ -1,6 +1,6 @@
 #include "ClassDefinition.h"
 
-ClassDefinition::ClassDefinition(shared_ptr<Modifiers> modifiers, shared_ptr<TokenIdentifier> identifier) : Definition(modifiers, identifier) {}
+ClassDefinition::ClassDefinition(shared_ptr<TokenIdentifier> identifier) : Definition(identifier) {}
 
 shared_ptr<Definition> ClassDefinition::addDefinition(shared_ptr<Definition> definition)
 {

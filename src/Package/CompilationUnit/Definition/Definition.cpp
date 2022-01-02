@@ -10,9 +10,8 @@ const char *DefinitionType_printable_strings[] =
     "Alias"
 };
 
-Definition::Definition(shared_ptr<Modifiers> modifiers, shared_ptr<TokenIdentifier> identifier)
+Definition::Definition(shared_ptr<TokenIdentifier> identifier)
 {
-    this->modifiers = modifiers;
     this->identifier = identifier;
 }
 
@@ -44,6 +43,16 @@ const char *Definition::getPrintableTypeString(DefinitionType type)
 const char *Definition::getPrintableTypeString()
 {
     return getPrintableTypeString(getType());
+}
+
+shared_ptr<Modifiers> Definition::getModifiers()
+{
+    return modifiers;
+}
+
+void Definition::setModifiers(shared_ptr<Modifiers> modifiers)
+{
+    this->modifiers = modifiers;
 }
 
 shared_ptr<TokenIdentifier> Definition::getIdentifier()

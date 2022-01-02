@@ -1,6 +1,6 @@
 #include "VariableDefinition.h"
 
-VariableDefinition::VariableDefinition(shared_ptr<Modifiers> modifiers, shared_ptr<DataType> data_type, shared_ptr<TokenIdentifier> identifier) : Definition(modifiers, identifier)
+VariableDefinition::VariableDefinition(shared_ptr<DataType> data_type, shared_ptr<TokenIdentifier> identifier) : Definition(identifier)
 {
     this->data_type = data_type;
 }
