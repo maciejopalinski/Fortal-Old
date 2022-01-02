@@ -60,6 +60,7 @@ const vector<string> TokenKeyword::lexer_matches =
     "try",
     "catch",
     "finally",
+    "new",
     "void",
     "int1",
     "int8",
