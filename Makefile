@@ -2,7 +2,7 @@ TARGET := ./bin/fortal
 TEST_TARGET := ./bin/test
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
-LDFLAGS := 
+LDFLAGS :=
 ARGS := -v test/fortal/*.f
 
 SRC_DIR := src
