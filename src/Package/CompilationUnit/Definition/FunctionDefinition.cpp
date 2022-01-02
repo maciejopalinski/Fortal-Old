@@ -12,7 +12,7 @@ shared_ptr<DataType> FunctionDefinition::getReturnType()
 
 void FunctionDefinition::addParameter(shared_ptr<VariableDefinition> definition)
 {
-    this->parameters.push_back(definition);
+    parameters.push_back(definition);
 }
 
 void FunctionDefinition::addParameters(vector<shared_ptr<VariableDefinition>> definitions)
@@ -26,6 +26,24 @@ void FunctionDefinition::addParameters(vector<shared_ptr<VariableDefinition>> de
 vector<shared_ptr<VariableDefinition>> FunctionDefinition::getParameters()
 {
     return parameters;
+}
+
+void FunctionDefinition::addThrow(shared_ptr<TokenIdentifier> ident)
+{
+    throws.push_back(ident);
+}
+
+void FunctionDefinition::addThrows(vector<shared_ptr<TokenIdentifier>> idents)
+{
+    for (auto ident : idents)
+    {
+        addThrow(ident);
+    }
+}
+
+vector<shared_ptr<TokenIdentifier>> FunctionDefinition::getThrows()
+{
+    return throws;
 }
 
 shared_ptr<BlockStatement> FunctionDefinition::getBody()
