@@ -55,6 +55,11 @@ void ErrorHandler::throw_invalid_token(Location location, const char c)
     terminate_compilation();
 }
 
+void ErrorHandler::throw_unexpected_eof(Location location)
+{
+    throw_unexpected_token(location, "unexpected end of file");
+}
+
 void ErrorHandler::throw_unexpected_token(Location location, string custom_message)
 {
     logLocation(

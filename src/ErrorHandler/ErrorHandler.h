@@ -31,6 +31,7 @@ class ErrorHandler
 
         void throw_invalid_token(Location location, const char c);
 
+        void throw_unexpected_eof(Location location);
         void throw_unexpected_token(Location location, string custom_message);
         void throw_unexpected_token(Location location, string unexpected, string expected);
 
