@@ -14,7 +14,10 @@ Parser::Parser(ErrorHandler &error_handler, Lexer *lexer) : error_handler(error_
     }
 
     current_token_idx = 0;
-    current_token = tokens[current_token_idx];
+    if (!tokens.empty())
+    {
+        current_token = tokens[current_token_idx];
+    }
 
     while (skipComment());
 }
@@ -113,8 +116,8 @@ shared_ptr<Statement> Parser::getStatement(bool required)
 
     if ((s = getExpressionStatement())) return s;
     if ((s = getBlockStatement())) return s;
-    if ((s = static_pointer_cast<Statement>(getIfStatement()))) return s;
-    if ((s = static_pointer_cast<Statement>(getLoopStatement()))) return s;
+    if ((s = getIfStatement())) return s;
+    if ((s = getLoopStatement())) return s;
     if ((s = getFlowControlStatement())) return s;
     if ((s = getTryCatchStatement())) return s;
     if ((s = getEmptyStatement())) return s;
