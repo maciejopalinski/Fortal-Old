@@ -25,4 +25,6 @@ class ClassDefinition : public Definition
         vector<shared_ptr<TokenIdentifier>> getExtends();
         void addExtends(vector<shared_ptr<TokenIdentifier>> extends);
         void addExtend(shared_ptr<TokenIdentifier> extend);
+
+        string getDebug(string indent, bool last = true, string custom = "");
 };

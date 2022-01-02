@@ -34,3 +34,42 @@ void ClassDefinition::addExtend(shared_ptr<TokenIdentifier> extend)
 {
     extends.push_back(extend);
 }
+
+string ClassDefinition::getDebug(string indent, bool last, string custom)
+{
+    custom = getIdentifier()->getName();
+
+    if (!extends.empty())
+    {
+        custom += " extends ";
+        for (size_t i = 0; i < extends.size(); i++)
+        {
+            auto ident = extends[i];
+            custom += ident->getName();
+
+            bool isLast = (i + 1 == extends.size());
+            if (!isLast) custom += ", ";
+        }
+    }
+
+    string output = Definition::getDebug(indent, last, custom);
+
+    if (last)
+    {
+        indent += "    ";
+    }
+    else
+    {
+        indent += "│   ";
+    }
+
+    for (size_t i = 0; i < members.size(); i++)
+    {
+        bool isLast = (i + 1 == members.size());
+
+        auto member = members[i];
+        output += member->getDebug(indent, isLast);
+    }
+
+    return output;
+}
