@@ -60,6 +60,7 @@ class Parser
         shared_ptr<EmptyStatement> getEmptyStatement(bool required = false);
 
         shared_ptr<TokenIdentifier> getIdentifier(bool required = false, string custom_message = "");
+        vector<shared_ptr<TokenIdentifier>> getIdentifierList(bool required = false);
         shared_ptr<TokenKeyword> getKeyword(bool required = false, string custom_message = "");
         shared_ptr<Modifiers> getModifiers();
         shared_ptr<DataType> getDataType(bool required = false);
@@ -70,7 +71,7 @@ class Parser
         shared_ptr<PackageIdentifier> getPackageDefinition();
         shared_ptr<PackageIdentifier> getImportStatement();
 
-        shared_ptr<Definition> getDefinition(bool required);
+        shared_ptr<Definition> getDefinition(bool required = false);
         shared_ptr<ClassDefinition> getClassDefinition();
         shared_ptr<Definition> getFunctionOrVariableDefinition();
 

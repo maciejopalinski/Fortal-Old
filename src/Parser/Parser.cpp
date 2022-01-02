@@ -345,6 +345,22 @@ shared_ptr<TokenIdentifier> Parser::getIdentifier(bool required, string custom_m
     return ident;
 }
 
+vector<shared_ptr<TokenIdentifier>> Parser::getIdentifierList(bool required)
+{
+    vector<shared_ptr<TokenIdentifier>> idents;
+    shared_ptr<TokenIdentifier> ident;
+
+    bool expectNext = required;
+    while ((ident = getIdentifier(expectNext)))
+    {
+        idents.push_back(ident);
+
+        expectNext = (bool) eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COMMA);
+    }
+
+    return idents;
+}
+
 shared_ptr<TokenKeyword> Parser::getKeyword(bool required, string custom_message)
 {
     auto eaten = eat(TOKEN_KEYWORD, required, custom_message);
@@ -477,11 +493,7 @@ vector<shared_ptr<VariableDefinition>> Parser::getFunctionParameterList()
     {
         params.push_back(param);
 
-        if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COMMA))
-        {
-            expectNext = true;
-        }
-        else break;
+        expectNext = (bool) eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COMMA);
     }
 
     return params;
@@ -563,12 +575,26 @@ shared_ptr<ClassDefinition> Parser::getClassDefinition()
     {
         auto mod = getModifiers();
         auto ident = getIdentifier(true);
-        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
 
         auto class_def =
             make_shared<ClassDefinition>(
                 ClassDefinition(mod, ident)
             );
+
+        if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_EXTENDS))
+        {
+            class_def->addExtends(getIdentifierList(true));
+        }
+
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_L, true);
+
+        shared_ptr<Definition> def;
+        while ((def = getDefinition()))
+        {
+            class_def->addDefinition(def);
+        }
+
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_R, true);
 
         return class_def;
     }
@@ -584,18 +610,21 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 
     auto ident = getIdentifier(true);
 
-    if (expectKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
     {
         auto def =
             make_shared<FunctionDefinition>(
                 FunctionDefinition(mod, datatype, ident)
             );
 
-        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
-
         def->addParameters(getFunctionParameterList());
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+
+        if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_THROWS))
+        {
+            def->addThrows(getIdentifierList(true));
+        }
 
         def->setBody(getBlockStatement(true));
 
