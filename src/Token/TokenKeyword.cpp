@@ -32,6 +32,7 @@ const vector<string> TokenKeyword::lexer_matches =
 {
     "package",
     "extends",
+    "throws",
     "import",
     "static",
     "abstract",
