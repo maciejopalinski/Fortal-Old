@@ -149,10 +149,7 @@ shared_ptr<BlockStatement> Parser::getBlockStatement(bool required)
 {
     if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_CURLY_L, required))
     {
-        auto block =
-            make_shared<BlockStatement>(
-                BlockStatement()
-            );
+        auto block = make_shared<BlockStatement>(BlockStatement());
 
         shared_ptr<Statement> s;
         while ((s = getStatement()))
@@ -171,10 +168,7 @@ shared_ptr<IfStatement> Parser::getIfStatement(bool required)
 {
     if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_IF, required))
     {
-        auto sif =
-            make_shared<IfStatement>(
-                IfStatement()
-            );
+        auto sif = make_shared<IfStatement>(IfStatement());
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
 
@@ -212,10 +206,7 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
         );
     }
 
-    auto loop =
-        make_shared<LoopStatement>(
-            LoopStatement(loop_type)
-        );
+    auto loop = make_shared<LoopStatement>(LoopStatement(loop_type));
 
     if (loop_type == STATEMENT_LOOP_DO_WHILE)
     {
@@ -284,10 +275,7 @@ shared_ptr<FlowControlStatement> Parser::getFlowControlStatement(bool required)
 
     eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
 
-    return
-        make_shared<FlowControlStatement>(
-            FlowControlStatement(flow_type)
-        );
+    return make_shared<FlowControlStatement>(FlowControlStatement(flow_type));
 }
 
 shared_ptr<TryStatement> Parser::getTryCatchStatement(bool required)
@@ -332,8 +320,7 @@ shared_ptr<EmptyStatement> Parser::getEmptyStatement(bool required)
 {
     if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, required))
     {
-        return
-            make_shared<EmptyStatement>(EmptyStatement());
+        return make_shared<EmptyStatement>(EmptyStatement());
     }
     return nullptr;
 }
@@ -472,10 +459,8 @@ shared_ptr<VariableDefinition> Parser::getFunctionParameter(bool required)
 
     auto ident = getIdentifier(true);
 
-    auto def =
-        make_shared<VariableDefinition>(
-            VariableDefinition(mod, datatype, ident)
-        );
+    auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
+    def->setModifiers(mod);
 
     // TODO: getExpression();
     // def->setDefaultValue(getExpression(true));
@@ -543,6 +528,8 @@ shared_ptr<PackageIdentifier> Parser::getImportStatement()
 
 shared_ptr<Definition> Parser::getDefinition(bool required)
 {
+    auto mod = getModifiers();
+
     shared_ptr<Definition> def = nullptr;
     if ((def = getClassDefinition())) return def;
     if ((def = getFunctionOrVariableDefinition())) return def;
@@ -565,21 +552,21 @@ shared_ptr<Definition> Parser::getDefinition(bool required)
             "expected definition"
         );
     }
+    else if (def) {
+        def->setModifiers(mod);
+    }
 
     return def;
 }
 
 shared_ptr<ClassDefinition> Parser::getClassDefinition()
 {
-    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CLASS))
+    if (expectKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CLASS))
     {
-        auto mod = getModifiers();
+        eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CLASS, true);
         auto ident = getIdentifier(true);
 
-        auto class_def =
-            make_shared<ClassDefinition>(
-                ClassDefinition(mod, ident)
-            );
+        auto class_def = make_shared<ClassDefinition>(ClassDefinition(ident));
 
         if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_EXTENDS))
         {
@@ -603,7 +590,6 @@ shared_ptr<ClassDefinition> Parser::getClassDefinition()
 
 shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 {
-    auto mod = getModifiers();
     auto datatype = getDataType();
 
     if (!datatype) return nullptr;
@@ -612,10 +598,7 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 
     if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
     {
-        auto def =
-            make_shared<FunctionDefinition>(
-                FunctionDefinition(mod, datatype, ident)
-            );
+        auto def = make_shared<FunctionDefinition>(FunctionDefinition(datatype, ident));
 
         def->addParameters(getFunctionParameterList());
 
@@ -632,10 +615,7 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
     }
     else
     {
-        auto def =
-            make_shared<VariableDefinition>(
-                VariableDefinition(mod, datatype, ident)
-            );
+        auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
 
         if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
         {
@@ -663,10 +643,7 @@ shared_ptr<CompilationUnit> Parser::parse()
 
     string filename = lexer->getFilename();
 
-    auto unit =
-        make_shared<CompilationUnit>(
-            CompilationUnit(getPackageDefinition(), filename)
-        );
+    auto unit = make_shared<CompilationUnit>(CompilationUnit(getPackageDefinition(), filename));
 
     shared_ptr<PackageIdentifier> import;
     while ((import = getImportStatement()))
