@@ -70,7 +70,7 @@ class Parser
         shared_ptr<PackageIdentifier> getPackageDefinition();
         shared_ptr<PackageIdentifier> getImportStatement();
 
-        shared_ptr<Definition> getDefinition();
+        shared_ptr<Definition> getDefinition(bool required);
         shared_ptr<ClassDefinition> getClassDefinition();
         shared_ptr<Definition> getFunctionOrVariableDefinition();
 

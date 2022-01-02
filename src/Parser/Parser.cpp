@@ -529,7 +529,7 @@ shared_ptr<PackageIdentifier> Parser::getImportStatement()
     return nullptr;
 }
 
-shared_ptr<Definition> Parser::getDefinition()
+shared_ptr<Definition> Parser::getDefinition(bool required)
 {
     shared_ptr<Definition> def = nullptr;
     if ((def = getClassDefinition())) return def;
@@ -540,6 +540,19 @@ shared_ptr<Definition> Parser::getDefinition()
 
     // TODO: getAliasDefinition()
     // if ((def = getAliasDefinition())) return def;
+
+    if (!def && required)
+    {
+        // TODO: something is hacky around here, maybe should be changed
+        Location location;
+        if (!current_token) location = this->lexer->getLocation();
+        else location = current_token->location;
+
+        error_handler.throw_unexpected_token(
+            location,
+            "expected definition"
+        );
+    }
 
     return def;
 }
@@ -632,10 +645,9 @@ shared_ptr<CompilationUnit> Parser::parse()
         unit->addImport(import);
     }
 
-    shared_ptr<Definition> definition;
-    while ((definition = getDefinition()))
+    while (current_token)
     {
-        unit->addDefinition(definition);
+        unit->addDefinition(getDefinition(true));
     }
 
     return unit;
