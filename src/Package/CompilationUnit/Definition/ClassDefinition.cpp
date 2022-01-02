@@ -4,12 +4,8 @@ ClassDefinition::ClassDefinition(shared_ptr<TokenIdentifier> identifier) : Defin
 
 shared_ptr<Definition> ClassDefinition::addDefinition(shared_ptr<Definition> definition)
 {
-    if (definition->getType() == DEFINITION_FUNCTION || definition->getType() == DEFINITION_VARIABLE)
-    {
-        members.push_back(definition);
-        return definition;
-    }
-    return nullptr;
+    members.push_back(definition);
+    return definition;
 }
 
 vector<shared_ptr<Definition>> ClassDefinition::getDefinitions()
