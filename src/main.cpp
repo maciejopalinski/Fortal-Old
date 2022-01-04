@@ -86,5 +86,7 @@ int main(int argc, char **argv)
     }
 
     compiler.compile();
+
+    error_handler.log(E_EXTRA, "Exiting...");
     return 0;
 }
