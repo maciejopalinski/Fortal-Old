@@ -26,7 +26,8 @@ class Parser
 
         shared_ptr<Token> current_token;
         vector<shared_ptr<Token>> tokens;
-        size_t current_token_idx;
+        size_t current_token_idx = 0;
+        size_t saved_state_token_idx[8] = {};
 
     public:
         Parser(ErrorHandler &error_handler, Lexer *lexer);
@@ -34,7 +35,11 @@ class Parser
 
         void debugCurrentToken();
         bool skipComment();
-        void nextToken();
+        void nextToken(size_t amount = 1, bool debug = true);
+
+        void saveState(size_t slot);
+        void loadState(size_t slot);
+        void clearState(size_t slot);
 
         template<class T>
         bool expectKind(TokenType token_type, T token_kind, bool report_error = false, string custom_message = "");

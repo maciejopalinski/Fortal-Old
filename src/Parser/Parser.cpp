@@ -13,7 +13,6 @@ Parser::Parser(ErrorHandler &error_handler, Lexer *lexer) : error_handler(error_
         // error_handler.logLocation(E_DEBUG, token->location, token->getDebug().c_str());
     }
 
-    current_token_idx = 0;
     if (!tokens.empty())
     {
         current_token = tokens[current_token_idx];
@@ -50,11 +49,11 @@ bool Parser::skipComment()
     return false;
 }
 
-void Parser::nextToken()
+void Parser::nextToken(size_t amount, bool debug)
 {
-    debugCurrentToken();
+    if (debug) debugCurrentToken();
 
-    current_token_idx++;
+    current_token_idx += amount;
     if (current_token_idx >= tokens.size())
     {
         current_token = nullptr;
@@ -65,6 +64,35 @@ void Parser::nextToken()
     }
 
     while (skipComment());
+}
+
+void Parser::saveState(size_t slot)
+{
+    saved_state_token_idx[slot] = current_token_idx;
+
+    error_handler.logLocation(
+        E_DEBUG,
+        current_token->location,
+        "Saved Parser state"
+    );
+}
+
+void Parser::loadState(size_t slot)
+{
+    current_token_idx = saved_state_token_idx[slot];
+    clearState(slot);
+    nextToken(0, false);
+
+    error_handler.logLocation(
+        E_DEBUG,
+        current_token->location,
+        "Loaded Parser state"
+    );
+}
+
+void Parser::clearState(size_t slot)
+{
+    saved_state_token_idx[slot] = 0;
 }
 
 bool Parser::expect(TokenType token_type, bool report_error, string custom_message)
