@@ -18,4 +18,6 @@ class ExpressionStatement : public Statement
 
         shared_ptr<Expression> getExpression();
         void setExpression(shared_ptr<Expression> expression);
+
+        string getDebug(string indent, bool last = true, string custom = "");
 };
