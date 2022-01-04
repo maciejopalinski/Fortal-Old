@@ -29,7 +29,7 @@ string QualifiedIdentifier::getQualifiedIdentifier()
     return out;
 }
 
-string QualifiedIdentifier::getDebug(string indent, bool last)
+string QualifiedIdentifier::getDebug(string indent, string name, bool last)
 {
     string output = indent;
 
@@ -44,7 +44,11 @@ string QualifiedIdentifier::getDebug(string indent, bool last)
         indent += "│   ";
     }
 
-    output += ("[Import] " + getQualifiedIdentifier() + "\n");
+    output +=
+        format(
+            "[%s] ",
+            name.c_str()
+        ) + getQualifiedIdentifier() + "\n";
 
     return output;
 }

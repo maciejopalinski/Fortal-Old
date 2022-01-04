@@ -20,5 +20,5 @@ class QualifiedIdentifier
         vector<shared_ptr<TokenIdentifier>> getIdentifiers();
         virtual string getQualifiedIdentifier();
 
-        virtual string getDebug(string indent, bool last = true);
+        virtual string getDebug(string indent, string name = "", bool last = true);
 };
