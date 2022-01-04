@@ -719,9 +719,22 @@ shared_ptr<FlowControlStatement> Parser::getFlowControlStatement(bool required)
         );
     }
 
-    eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+    auto flow = make_shared<FlowControlStatement>(FlowControlStatement(flow_type));
 
-    return make_shared<FlowControlStatement>(FlowControlStatement(flow_type));
+    if (flow_type == STATEMENT_FLOW_CONTROL_RETURN)
+    {
+        auto stat = getExpressionStatement();
+        if (stat)
+        {
+            flow->setExpression(stat->getExpression());
+        }
+    }
+    else
+    {
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+    }
+
+    return flow;
 }
 
 shared_ptr<TryStatement> Parser::getTryCatchStatement(bool required)
