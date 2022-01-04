@@ -1064,6 +1064,27 @@ shared_ptr<ClassDefinition> Parser::getClassDefinition()
     return nullptr;
 }
 
+shared_ptr<VariableDefinition> Parser::getVariableDefinition(bool required)
+{
+    auto datatype = getDataType(required);
+
+    if (datatype)
+    {
+        auto ident = getIdentifier(true);
+
+        auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
+
+        if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
+        {
+            // TODO: getExpression()
+            def->setDefaultValue(getExpression(true));
+        }
+
+        return def;
+    }
+    return nullptr;
+}
+
 shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
 {
     auto datatype = getDataType();
