@@ -68,7 +68,7 @@ string FunctionDefinition::getDebug(string indent, bool last, string custom)
         bool isLast = (i + 1 == parameters.size());
 
         auto param = parameters[i];
-        custom += param->getFunctionParamDebug(isLast);
+        custom += param->getFunctionParamDebug("", isLast);
     }
 
     custom += ")";

@@ -22,15 +22,36 @@ shared_ptr<Expression> VariableDefinition::getDefaultValue()
 
 string VariableDefinition::getDebug(string indent, bool last, string custom)
 {
-    return Definition::getDebug(indent, last, getFunctionParamDebug(last) + custom);
+    return Definition::getDebug(indent, last, getFunctionParamDebug(indent, last, false) + custom);
 }
 
-string VariableDefinition::getFunctionParamDebug(bool last)
+string VariableDefinition::getFunctionParamDebug(string indent, bool last, bool simple)
 {
     string output;
     output = data_type->toString();
     output += " ";
     output += getIdentifier()->getName();
+
+    if (!simple)
+    {
+        if (!indent.empty())
+        {
+            if (last)
+            {
+                indent += "    ";
+            }
+            else
+            {
+                indent += "│   ";
+            }
+        }
+
+        if (default_value)
+        {
+            output += "\n" + default_value->getDebug(indent);
+        }
+    }
+
     output += (last ? "" : ", ");
 
     return output;

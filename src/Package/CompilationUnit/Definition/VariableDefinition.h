@@ -24,5 +24,5 @@ class VariableDefinition : public Definition
         shared_ptr<Expression> getDefaultValue();
 
         string getDebug(string indent, bool last = true, string custom = "");
-        string getFunctionParamDebug(bool last = false);
+        string getFunctionParamDebug(string indent, bool last = false, bool simple = true);
 };
