@@ -9,12 +9,9 @@ using std::static_pointer_cast;
 
 #include "../Package/CompilationUnit/CompilationUnit.h"
 #include "../Package/Identifier/PackageIdentifier.h"
-#include "../Package/CompilationUnit/Definition/ClassDefinition.h"
-#include "../Package/CompilationUnit/Definition/FunctionDefinition.h"
-#include "../Package/CompilationUnit/Definition/VariableDefinition.h"
 
+#include "../Package/CompilationUnit/Definition/Definitions.all.h"
 #include "../Package/CompilationUnit/Definition/Statement/Statements.all.h"
-
 #include "../Package/CompilationUnit/Definition/Expression/Expressions.all.h"
 
 class Parser
