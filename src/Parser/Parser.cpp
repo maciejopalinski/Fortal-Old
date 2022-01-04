@@ -117,18 +117,448 @@ shared_ptr<Token> Parser::eat(TokenType token_type, bool report_error, string cu
     return nullptr;
 }
 
+vector<shared_ptr<Expression>> Parser::getExpressionList(bool required)
+{
+    vector<shared_ptr<Expression>> exprs;
+    shared_ptr<Expression> expr;
+
+    bool expectNext = required;
+    while ((expr = getExpression(expectNext)))
+    {
+        exprs.push_back(expr);
+
+        expectNext = (bool) eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COMMA);
+    }
+
+    return exprs;
+}
+
+shared_ptr<Expression> Parser::getExpression(bool required, bool check_operators)
+{
+    shared_ptr<Expression> e;
+    while (true)
+    {
+        if ((e = getParenExpression())) break;
+        if ((e = getLiteralExpression())) break;
+        if ((e = getIdentifierExpression())) break;
+        if ((e = getNewStatementExpression())) break;
+        if ((e = getVariableDefinitionExpression())) break;
+        if ((e = getPreOperator())) break;
+        // if ((e = getOperationExpression())) break;
+
+        if (!e && required)
+        {
+            // TODO: something is hacky around here, maybe should be changed
+            Location location;
+            if (!current_token) location = this->lexer->getLocation();
+            else location = current_token->location;
+
+            error_handler.throw_unexpected_token(
+                location,
+                "expected expression"
+            );
+        }
+        return nullptr;
+    }
+
+    shared_ptr<OperationExpression> m;
+    while (true)
+    {
+        if ((m = getTernaryPart()))
+        {
+            m->setCondition(e);
+            e = m;
+            continue;
+        }
+        if (
+            check_operators &&
+            (
+                (m = getAssignPart()) ||
+                (m = getLogicPart()) ||
+                (m = getBitwiseOpPart()) ||
+                (m = getCmpPart()) ||
+                (m = getBitwiseShiftPart()) ||
+                (m = getTermPart()) ||
+                (m = getFactorPart()) ||
+                (m = getPostOperatorPart())
+            )
+        )
+        {
+            m->setLeftExpression(e);
+            e = m;
+            continue;
+        }
+        if (
+            (m = getMemberAccessExpressionPart()) ||
+            (m = getFunctionCallExpressionPart()) ||
+            (m = getIndexExpressionPart())
+        )
+        {
+            m->setLeftExpression(e);
+            e = m;
+            continue;
+        }
+        break;
+    }
+
+    return e;
+}
+
+shared_ptr<LiteralExpression> Parser::getLiteralExpression(bool required)
+{
+    auto literal = getLiteral(required);
+    if (literal)
+    {
+        return make_shared<LiteralExpression>(LiteralExpression(literal));
+    }
+    return nullptr;
+}
+
+shared_ptr<VariableDefinitionExpression> Parser::getVariableDefinitionExpression(bool required)
+{
+    auto def = getVariableDefinition(required);
+    if (def)
+    {
+        return make_shared<VariableDefinitionExpression>(VariableDefinitionExpression(def));
+    }
+    return nullptr;
+}
+
+shared_ptr<NewStatementExpression> Parser::getNewStatementExpression(bool required)
+{
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_NEW, required))
+    {
+        auto expr = getExpression(true);
+        return make_shared<NewStatementExpression>(NewStatementExpression(expr));
+    }
+    return nullptr;
+}
+
+shared_ptr<Expression> Parser::getIdentifierExpression(bool required)
+{
+    auto ident = getIdentifier(required);
+    if (ident)
+    {
+        return make_shared<IdentifierExpression>(IdentifierExpression(ident));
+    }
+    return nullptr;
+}
+
+shared_ptr<ParenExpression> Parser::getParenExpression(bool required)
+{
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, required))
+    {
+        auto expr = getExpression(true);
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+
+        return make_shared<ParenExpression>(ParenExpression(expr));
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getFunctionCallExpressionPart(bool required)
+{
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, required))
+    {
+        auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_CALL));
+
+        if (!eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R))
+        {
+            auto exprs = getExpressionList();
+            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+            o->addCallArgs(exprs);
+        }
+
+        return o;
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getIndexExpressionPart(bool required)
+{
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_L, required))
+    {
+        auto expr = getExpression(true);
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_R, true);
+
+        auto o = make_shared<OperationExpression>(OperationExpression());
+        o->setKind(EXPRESSION_OPERATION_INDEX);
+        o->setRightExpression(expr);
+        return o;
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getMemberAccessExpressionPart(bool required)
+{
+    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_DOT, required))
+    {
+        auto ident = getIdentifierExpression();
+
+        auto o = make_shared<OperationExpression>(OperationExpression());
+        o->setKind(EXPRESSION_OPERATION_MEMBER_ACCESS);
+        o->setRightExpression(ident);
+        return o;
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getPostOperatorPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() == TOKEN_OPERATOR_ARITH_INCR ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_DECR
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_UNARY));
+            o->setOperator(op);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getPreOperator(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() == TOKEN_OPERATOR_ARITH_INCR ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_DECR ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_ADD ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_SUB ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_BIT_NOT ||
+                op->getKind() == TOKEN_OPERATOR_LOGIC_NOT
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_UNARY));
+
+            auto expr = getExpression(true);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getFactorPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() == TOKEN_OPERATOR_ARITH_MULT ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_DIV ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_MOD
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getTermPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() == TOKEN_OPERATOR_ARITH_ADD ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_SUB
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getBitwiseShiftPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() == TOKEN_OPERATOR_ARITH_BIT_LSHIFT ||
+                op->getKind() == TOKEN_OPERATOR_ARITH_BIT_RSHIFT
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getCmpPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() >= TOKEN_OPERATOR_CMP_EQ &&
+                op->getKind() <= TOKEN_OPERATOR_CMP_LESS_EQ
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getBitwiseOpPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() >= TOKEN_OPERATOR_ARITH_BIT_NOT &&
+                op->getKind() <= TOKEN_OPERATOR_ARITH_BIT_XOR
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getLogicPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                op->getKind() == TOKEN_OPERATOR_LOGIC_OR ||
+                op->getKind() == TOKEN_OPERATOR_LOGIC_AND
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getAssignPart(bool required)
+{
+    if (expect(TOKEN_OPERATOR, required))
+    {
+        auto op = static_pointer_cast<TokenOperator>(current_token);
+        if (
+            op &&
+            (
+                (op->getKind() >= TOKEN_OPERATOR_ASSIGN) &&
+                (op->getKind() <= TOKEN_OPERATOR_ASSIGN_BIT_RSHIFT)
+            )
+        )
+        {
+            eat(TOKEN_OPERATOR, true);
+            auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
+
+            auto expr = getExpression(true, false);
+            o->setOperator(op);
+            o->setRightExpression(expr);
+            return o;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<OperationExpression> Parser::getTernaryPart(bool required)
+{
+    if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_LOGIC_TERNARY, required))
+    {
+        auto o = make_shared<OperationExpression>(OperationExpression());
+
+        auto left = getExpression(true);
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COLON, true);
+        auto right = getExpression(true);
+
+        o->setKind(EXPRESSION_OPERATION_TERNARY);
+        o->setLeftExpression(left);
+        o->setRightExpression(right);
+        return o;
+    }
+    return nullptr;
+}
+
 shared_ptr<Statement> Parser::getStatement(bool required)
 {
     shared_ptr<Statement> s = nullptr;
 
-    if ((s = getExpressionStatement())) return s;
+    if ((s = getEmptyStatement())) return s;
     if ((s = getBlockStatement())) return s;
     if ((s = getIfStatement())) return s;
     if ((s = getLoopStatement())) return s;
     if ((s = getFlowControlStatement())) return s;
     if ((s = getTryCatchStatement())) return s;
-    if ((s = getEmptyStatement())) return s;
-
+    if ((s = getExpressionStatement())) return s;
     if (!s && required)
     {
         // TODO: something is hacky around here, maybe should be changed
@@ -147,9 +577,13 @@ shared_ptr<Statement> Parser::getStatement(bool required)
 
 shared_ptr<ExpressionStatement> Parser::getExpressionStatement(bool required)
 {
-    // TODO: getExpression()
-    // return getExpression(required);
-    return required ? nullptr : nullptr;
+    auto expr = getExpression(required);
+    if (expr)
+    {
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+        return make_shared<ExpressionStatement>(ExpressionStatement(expr));
+    }
+    return nullptr;
 }
 
 shared_ptr<BlockStatement> Parser::getBlockStatement(bool required)

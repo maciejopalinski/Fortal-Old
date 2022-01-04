@@ -44,7 +44,36 @@ class Parser
         shared_ptr<TokenHasKind<T>> eatKind(TokenType token_type, T token_kind, bool report_error = false, string custom_message = "");
         shared_ptr<Token> eat(TokenType token_type, bool report_error = false, string custom_message = "");
 
+        // EXPRESSION WRAPPER
+        vector<shared_ptr<Expression>> getExpressionList(bool required = false);
+        shared_ptr<Expression> getExpression(bool required = false, bool check_operators = true);
+
+        // BASIC EXPRESSIONS
+        shared_ptr<LiteralExpression> getLiteralExpression(bool required = false);
+        shared_ptr<VariableDefinitionExpression> getVariableDefinitionExpression(bool required = false);
+        shared_ptr<NewStatementExpression> getNewStatementExpression(bool required = false);
+        shared_ptr<Expression> getIdentifierExpression(bool required = false);
+        shared_ptr<ParenExpression> getParenExpression(bool required = false);
+
+        // OPERATION EXPRESSIONS
+        shared_ptr<OperationExpression> getFunctionCallExpressionPart(bool required = false);
+        shared_ptr<OperationExpression> getIndexExpressionPart(bool required = false);
+        shared_ptr<OperationExpression> getMemberAccessExpressionPart(bool required = false);
+        shared_ptr<OperationExpression> getPostOperatorPart(bool required = false);
+        shared_ptr<OperationExpression> getPreOperator(bool required = false);
+        shared_ptr<OperationExpression> getFactorPart(bool required = false);
+        shared_ptr<OperationExpression> getTermPart(bool required = false);
+        shared_ptr<OperationExpression> getBitwiseShiftPart(bool required = false);
+        shared_ptr<OperationExpression> getCmpPart(bool required = false);
+        shared_ptr<OperationExpression> getBitwiseOpPart(bool required = false);
+        shared_ptr<OperationExpression> getLogicPart(bool required = false);
+        shared_ptr<OperationExpression> getAssignPart(bool required = false);
+        shared_ptr<OperationExpression> getTernaryPart(bool required = false);
+
+        // STATEMENT WRAPPER
         shared_ptr<Statement> getStatement(bool required = false);
+
+        // BASIC STATEMENTS
         shared_ptr<ExpressionStatement> getExpressionStatement(bool required = false);
         shared_ptr<BlockStatement> getBlockStatement(bool required = false);
         shared_ptr<IfStatement> getIfStatement(bool required = false);
@@ -54,6 +83,8 @@ class Parser
         shared_ptr<CatchStatement> getCatchStatement(bool required = false);
         shared_ptr<EmptyStatement> getEmptyStatement(bool required = false);
 
+        // TOKENS / UTILS
+        shared_ptr<TokenLiteral> getLiteral(bool required = false, string custom_message = "");
         shared_ptr<TokenIdentifier> getIdentifier(bool required = false, string custom_message = "");
         vector<shared_ptr<TokenIdentifier>> getIdentifierList(bool required = false);
         shared_ptr<TokenKeyword> getKeyword(bool required = false, string custom_message = "");
@@ -61,13 +92,17 @@ class Parser
         shared_ptr<DataType> getDataType(bool required = false);
         shared_ptr<VariableDefinition> getFunctionParameter(bool required = false);
         vector<shared_ptr<VariableDefinition>> getFunctionParameterList();
+        shared_ptr<TokenOperator> getOperator(bool required = false);
 
+        // PACKAGE
         shared_ptr<PackageIdentifier> getPackageIdentifier();
         shared_ptr<PackageIdentifier> getPackageDefinition();
         shared_ptr<PackageIdentifier> getImportStatement();
 
+        // COMPILATION UNIT
         shared_ptr<Definition> getDefinition(bool required = false);
         shared_ptr<ClassDefinition> getClassDefinition();
+        shared_ptr<VariableDefinition> getVariableDefinition(bool required = false);
         shared_ptr<Definition> getFunctionOrVariableDefinition();
 
         shared_ptr<CompilationUnit> parse();
