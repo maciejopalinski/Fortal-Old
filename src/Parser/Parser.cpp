@@ -161,7 +161,7 @@ vector<shared_ptr<Expression>> Parser::getExpressionList(bool required)
     return exprs;
 }
 
-shared_ptr<Expression> Parser::getExpression(bool required, bool check_operators)
+shared_ptr<Expression> Parser::getExpression(bool required, size_t op_lvl)
 {
     shared_ptr<Expression> e;
     while (true)
@@ -170,13 +170,10 @@ shared_ptr<Expression> Parser::getExpression(bool required, bool check_operators
         if ((e = getLiteralExpression())) break;
         if ((e = getIdentifierExpression())) break;
         if ((e = getNewStatementExpression())) break;
-        if ((e = getVariableDefinitionExpression())) break;
-        if ((e = getPreOperator())) break;
-        // if ((e = getOperationExpression())) break;
+        if (op_lvl <= 9 && (e = getPreOperator())) break;
 
         if (!e && required)
         {
-            // TODO: something is hacky around here, maybe should be changed
             Location location;
             if (!current_token) location = this->lexer->getLocation();
             else location = current_token->location;
@@ -192,23 +189,22 @@ shared_ptr<Expression> Parser::getExpression(bool required, bool check_operators
     shared_ptr<OperationExpression> m;
     while (true)
     {
-        if ((m = getTernaryPart()))
+        if (op_lvl <= 1 && (m = getTernaryPart()))
         {
             m->setCondition(e);
             e = m;
             continue;
         }
         if (
-            check_operators &&
             (
-                (m = getAssignPart()) ||
-                (m = getLogicPart()) ||
-                (m = getBitwiseOpPart()) ||
-                (m = getCmpPart()) ||
-                (m = getBitwiseShiftPart()) ||
-                (m = getTermPart()) ||
-                (m = getFactorPart()) ||
-                (m = getPostOperatorPart())
+                (op_lvl <= 2  && (m = getAssignPart())) ||
+                (op_lvl <= 3  && (m = getLogicPart())) ||
+                (op_lvl <= 4  && (m = getBitwiseOpPart())) ||
+                (op_lvl <= 5  && (m = getCmpPart())) ||
+                (op_lvl <= 6  && (m = getBitwiseShiftPart())) ||
+                (op_lvl <= 7  && (m = getTermPart())) ||
+                (op_lvl <= 8  && (m = getFactorPart())) ||
+                (op_lvl <= 10 && (m = getPostOperatorPart()))
             )
         )
         {
@@ -217,9 +213,12 @@ shared_ptr<Expression> Parser::getExpression(bool required, bool check_operators
             continue;
         }
         if (
-            (m = getMemberAccessExpressionPart()) ||
-            (m = getFunctionCallExpressionPart()) ||
-            (m = getIndexExpressionPart())
+            op_lvl <= 10 &&
+            (
+                (m = getMemberAccessExpressionPart()) ||
+                (m = getFunctionCallExpressionPart()) ||
+                (m = getIndexExpressionPart())
+            )
         )
         {
             m->setLeftExpression(e);
@@ -238,16 +237,6 @@ shared_ptr<LiteralExpression> Parser::getLiteralExpression(bool required)
     if (literal)
     {
         return make_shared<LiteralExpression>(LiteralExpression(literal));
-    }
-    return nullptr;
-}
-
-shared_ptr<VariableDefinitionExpression> Parser::getVariableDefinitionExpression(bool required)
-{
-    auto def = getVariableDefinition(required);
-    if (def)
-    {
-        return make_shared<VariableDefinitionExpression>(VariableDefinitionExpression(def));
     }
     return nullptr;
 }
@@ -399,7 +388,7 @@ shared_ptr<OperationExpression> Parser::getFactorPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 8);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -424,7 +413,7 @@ shared_ptr<OperationExpression> Parser::getTermPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 7);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -449,7 +438,7 @@ shared_ptr<OperationExpression> Parser::getBitwiseShiftPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 6);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -474,7 +463,7 @@ shared_ptr<OperationExpression> Parser::getCmpPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 5);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -499,7 +488,7 @@ shared_ptr<OperationExpression> Parser::getBitwiseOpPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 4);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -524,7 +513,7 @@ shared_ptr<OperationExpression> Parser::getLogicPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 3);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -549,7 +538,7 @@ shared_ptr<OperationExpression> Parser::getAssignPart(bool required)
             eat(TOKEN_OPERATOR, true);
             auto o = make_shared<OperationExpression>(OperationExpression(EXPRESSION_OPERATION_BINARY));
 
-            auto expr = getExpression(true, false);
+            auto expr = getExpression(true, 2);
             o->setOperator(op);
             o->setRightExpression(expr);
             return o;
@@ -564,9 +553,9 @@ shared_ptr<OperationExpression> Parser::getTernaryPart(bool required)
     {
         auto o = make_shared<OperationExpression>(OperationExpression());
 
-        auto left = getExpression(true);
+        auto left = getExpression(true, 1);
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_COLON, true);
-        auto right = getExpression(true);
+        auto right = getExpression(true, 1);
 
         o->setKind(EXPRESSION_OPERATION_TERNARY);
         o->setLeftExpression(left);
@@ -586,10 +575,10 @@ shared_ptr<Statement> Parser::getStatement(bool required)
     if ((s = getLoopStatement())) return s;
     if ((s = getFlowControlStatement())) return s;
     if ((s = getTryCatchStatement())) return s;
+    if ((s = getVariableDefinitionStatement())) return s;
     if ((s = getExpressionStatement())) return s;
     if (!s && required)
     {
-        // TODO: something is hacky around here, maybe should be changed
         Location location;
         if (!current_token) location = this->lexer->getLocation();
         else location = current_token->location;
@@ -599,8 +588,17 @@ shared_ptr<Statement> Parser::getStatement(bool required)
             "expected statement"
         );
     }
+    return nullptr;
+}
 
-    return s;
+shared_ptr<VariableDefinitionStatement> Parser::getVariableDefinitionStatement(bool required)
+{
+    auto def = getVariableDefinition(required);
+    if (def)
+    {
+        return make_shared<VariableDefinitionStatement>(VariableDefinitionStatement(def));
+    }
+    return nullptr;
 }
 
 shared_ptr<ExpressionStatement> Parser::getExpressionStatement(bool required)
@@ -641,7 +639,6 @@ shared_ptr<IfStatement> Parser::getIfStatement(bool required)
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
 
-        // TODO: getExpression();
         sif->setCondition(getExpression(true));
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
@@ -669,7 +666,6 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
     {
         if (!required) return nullptr;
 
-        // TODO: something is hacky around here, maybe should be changed
         Location location;
         if (!current_token) location = this->lexer->getLocation();
         else location = current_token->location;
@@ -690,7 +686,6 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
         {
             eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
 
-            // TODO: getExpression();
             loop->setCondition(getExpression(true));
 
             eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
@@ -703,16 +698,17 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
 
         if (loop_type == STATEMENT_LOOP_FOR)
         {
-            // TODO: getExpression();
-            loop->setForInit(getExpression(true));
+            shared_ptr<Statement> def = getVariableDefinitionStatement();
+            if (!def) def = getExpressionStatement(true);
+
+            loop->setForInit(def);
         }
 
-        // TODO: getExpression();
         loop->setCondition(getExpression(true));
+        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
 
         if (loop_type == STATEMENT_LOOP_FOR)
         {
-            // TODO: getExpression();
             loop->setForIter(getExpression(true));
         }
 
@@ -736,7 +732,6 @@ shared_ptr<FlowControlStatement> Parser::getFlowControlStatement(bool required)
     {
         if (!required) return nullptr;
 
-        // TODO: something is hacky around here, maybe should be changed
         Location location;
         if (!current_token) location = this->lexer->getLocation();
         else location = current_token->location;
@@ -903,35 +898,50 @@ shared_ptr<Modifiers> Parser::getModifiers()
 
 shared_ptr<DataType> Parser::getDataType(bool required)
 {
+    saveState(2);
     if (expect(TOKEN_KEYWORD))
     {
-        auto keyw = getKeyword();
-        auto type = make_shared<DataType>(DataType(keyw));
-
-        while (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_L))
+        auto keyw = static_pointer_cast<TokenKeyword>(current_token);
+        if (
+            keyw->getKind() >= TOKEN_KEYWORD_VOID &&
+            keyw->getKind() <= TOKEN_KEYWORD_DOUBLE
+        )
         {
-            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_R, true);
-            type->addArrayDimension();
-        }
+            eat(TOKEN_KEYWORD, true);
+            auto type = make_shared<DataType>(DataType(keyw));
 
-        if (type->isValid()) return type;
+            while (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_L))
+            {
+                eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_R, true);
+                type->addArrayDimension();
+            }
+
+            return type;
+        }
     }
     else if (expect(TOKEN_IDENTIFIER))
     {
-        auto ident = getIdentifier();
+        auto ident = getIdentifier(true);
         auto type = make_shared<DataType>(DataType(ident));
 
         while (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_L))
         {
-            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_R, true);
-            type->addArrayDimension();
+            if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_SQUARE_R))
+            {
+                type->addArrayDimension();
+            }
+            else if (!required)
+            {
+                loadState(2);
+                return nullptr;
+            }
         }
 
+        clearState(2);
         return type;
     }
     else if (required)
     {
-        // TODO: something is hacky around here, maybe should be changed
         Location location;
         if (!current_token) location = this->lexer->getLocation();
         else location = current_token->location;
@@ -956,7 +966,6 @@ shared_ptr<VariableDefinition> Parser::getFunctionParameter(bool required)
     auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
     def->setModifiers(mod);
 
-    // TODO: getExpression();
     if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
     {
         def->setDefaultValue(getExpression(true));
@@ -1036,17 +1045,15 @@ shared_ptr<Definition> Parser::getDefinition(bool required)
 
     shared_ptr<Definition> def = nullptr;
     if ((def = getClassDefinition())) return def;
-    if ((def = getFunctionOrVariableDefinition())) return def;
+    if ((def = getFunctionDefinition())) return def;
+    if ((def = getVariableDefinition())) return def;
+    if ((def = getAliasDefinition())) return def;
 
     // TODO: getEnumDefinition()
     // if ((def = getEnumDefinition())) return def;
 
-    // TODO: getAliasDefinition()
-    // if ((def = getAliasDefinition())) return def;
-
     if (!def && required)
     {
-        // TODO: something is hacky around here, maybe should be changed
         Location location;
         if (!current_token) location = this->lexer->getLocation();
         else location = current_token->location;
@@ -1065,9 +1072,8 @@ shared_ptr<Definition> Parser::getDefinition(bool required)
 
 shared_ptr<ClassDefinition> Parser::getClassDefinition()
 {
-    if (expectKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CLASS))
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CLASS))
     {
-        eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CLASS, true);
         auto ident = getIdentifier(true);
 
         auto class_def = make_shared<ClassDefinition>(ClassDefinition(ident));
@@ -1094,64 +1100,75 @@ shared_ptr<ClassDefinition> Parser::getClassDefinition()
 
 shared_ptr<VariableDefinition> Parser::getVariableDefinition(bool required)
 {
+    saveState(1);
     auto datatype = getDataType(required);
-
     if (datatype)
     {
-        auto ident = getIdentifier(true);
-
-        auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
-
-        if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
+        auto ident = getIdentifier(required);
+        if (ident)
         {
-            // TODO: getExpression()
-            def->setDefaultValue(getExpression(true));
-        }
+            auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
 
-        return def;
+            if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
+            {
+                def->setDefaultValue(getExpression(true));
+            }
+
+            eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+
+            clearState(1);
+            return def;
+        }
     }
+    loadState(1);
     return nullptr;
 }
 
-shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
+shared_ptr<FunctionDefinition> Parser::getFunctionDefinition()
 {
+    saveState(1);
     auto datatype = getDataType();
-
-    if (!datatype) return nullptr;
-
-    auto ident = getIdentifier(true);
-
-    if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
+    if (datatype)
     {
-        auto def = make_shared<FunctionDefinition>(FunctionDefinition(datatype, ident));
-
-        def->addParameters(getFunctionParameterList());
-
-        eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
-
-        if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_THROWS))
+        auto ident = getIdentifier();
+        if (ident)
         {
-            def->addThrows(getIdentifierList(true));
+            if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
+            {
+                auto def = make_shared<FunctionDefinition>(FunctionDefinition(datatype, ident));
+
+                def->addParameters(getFunctionParameterList());
+
+                eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
+
+                if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_THROWS))
+                {
+                    def->addThrows(getIdentifierList(true));
+                }
+
+                def->setBody(getBlockStatement(true));
+
+                clearState(1);
+                return def;
+            }
         }
-
-        def->setBody(getBlockStatement(true));
-
-        return def;
     }
-    else
+    loadState(1);
+    return nullptr;
+}
+
+shared_ptr<AliasDefinition> Parser::getAliasDefinition()
+{
+    if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_ALIAS))
     {
-        auto def = make_shared<VariableDefinition>(VariableDefinition(datatype, ident));
-
-        if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
-        {
-            // TODO: getExpression()
-            def->setDefaultValue(getExpression(true));
-        }
-
+        auto id1 = getIdentifier(true);
+        eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN, true);
+        auto id2 = getDataType(true);
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
+
+        auto def = make_shared<AliasDefinition>(AliasDefinition(id1, id2));
         return def;
     }
-
     return nullptr;
 }
 

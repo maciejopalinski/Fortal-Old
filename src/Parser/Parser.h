@@ -48,11 +48,10 @@ class Parser
 
         // EXPRESSION WRAPPER
         vector<shared_ptr<Expression>> getExpressionList(bool required = false);
-        shared_ptr<Expression> getExpression(bool required = false, bool check_operators = true);
+        shared_ptr<Expression> getExpression(bool required = false, size_t op_lvl = 1);
 
         // BASIC EXPRESSIONS
         shared_ptr<LiteralExpression> getLiteralExpression(bool required = false);
-        shared_ptr<VariableDefinitionExpression> getVariableDefinitionExpression(bool required = false);
         shared_ptr<NewStatementExpression> getNewStatementExpression(bool required = false);
         shared_ptr<Expression> getIdentifierExpression(bool required = false);
         shared_ptr<ParenExpression> getParenExpression(bool required = false);
@@ -76,6 +75,7 @@ class Parser
         shared_ptr<Statement> getStatement(bool required = false);
 
         // BASIC STATEMENTS
+        shared_ptr<VariableDefinitionStatement> getVariableDefinitionStatement(bool required = false);
         shared_ptr<ExpressionStatement> getExpressionStatement(bool required = false);
         shared_ptr<BlockStatement> getBlockStatement(bool required = false);
         shared_ptr<IfStatement> getIfStatement(bool required = false);
@@ -105,7 +105,8 @@ class Parser
         shared_ptr<Definition> getDefinition(bool required = false);
         shared_ptr<ClassDefinition> getClassDefinition();
         shared_ptr<VariableDefinition> getVariableDefinition(bool required = false);
-        shared_ptr<Definition> getFunctionOrVariableDefinition();
+        shared_ptr<FunctionDefinition> getFunctionDefinition();
+        shared_ptr<AliasDefinition> getAliasDefinition();
 
         shared_ptr<CompilationUnit> parse();
 };
