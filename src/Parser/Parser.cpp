@@ -663,7 +663,7 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
             eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
 
             // TODO: getExpression();
-            // loop->setCondition(getExpression(true));
+            loop->setCondition(getExpression(true));
 
             eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
             eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
@@ -676,16 +676,16 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
         if (loop_type == STATEMENT_LOOP_FOR)
         {
             // TODO: getExpression();
-            // loop->setForInit(getExpression());
+            loop->setForInit(getExpression(true));
         }
 
         // TODO: getExpression();
-        // loop->setCondition(getExpression(true));
+        loop->setCondition(getExpression(true));
 
         if (loop_type == STATEMENT_LOOP_FOR)
         {
             // TODO: getExpression();
-            // loop->setForIter(getExpression());
+            loop->setForIter(getExpression(true));
         }
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
