@@ -11,7 +11,6 @@ using std::make_shared;
 enum ExpressionType
 {
     EXPRESSION_LITERAL, // <Literal>
-    EXPRESSION_VARIABLE_DEFINITION, // <VariableDefinition>
     EXPRESSION_NEW_STATEMENT, // new <Expression>
     EXPRESSION_IDENTIFIER, // <Identifier>
     EXPRESSION_PAREN, // ( <Expression> )

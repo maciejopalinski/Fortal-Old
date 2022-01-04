@@ -3,7 +3,6 @@
 const char *ExpressionType_printable_strings[] =
 {
     "Literal",
-    "VariableDefinition",
     "NewStatement",
     "Identifier",
     "Paren",
