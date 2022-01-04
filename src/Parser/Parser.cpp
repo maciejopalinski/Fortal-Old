@@ -1117,7 +1117,7 @@ shared_ptr<Definition> Parser::getFunctionOrVariableDefinition()
         if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
         {
             // TODO: getExpression()
-            // def->setDefaultValue(getExpression(true));
+            def->setDefaultValue(getExpression(true));
         }
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_SEMICOLON, true);
