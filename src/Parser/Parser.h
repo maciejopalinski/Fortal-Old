@@ -13,14 +13,9 @@ using std::static_pointer_cast;
 #include "../Package/CompilationUnit/Definition/FunctionDefinition.h"
 #include "../Package/CompilationUnit/Definition/VariableDefinition.h"
 
-#include "../Package/CompilationUnit/Definition/Statement/ExpressionStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/BlockStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/IfStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/LoopStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/FlowControlStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/TryStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/CatchStatement.h"
-#include "../Package/CompilationUnit/Definition/Statement/EmptyStatement.h"
+#include "../Package/CompilationUnit/Definition/Statement/Statements.all.h"
+
+#include "../Package/CompilationUnit/Definition/Expression/Expressions.all.h"
 
 class Parser
 {
