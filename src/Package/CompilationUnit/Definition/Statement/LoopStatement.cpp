@@ -22,12 +22,12 @@ string LoopStatement::getPrintableKindString()
     return getPrintableKindString(getKind());
 }
 
-shared_ptr<Expression> LoopStatement::getForInit()
+shared_ptr<Statement> LoopStatement::getForInit()
 {
     return for_init;
 }
 
-void LoopStatement::setForInit(shared_ptr<Expression> for_init)
+void LoopStatement::setForInit(shared_ptr<Statement> for_init)
 {
     this->for_init = for_init;
 }

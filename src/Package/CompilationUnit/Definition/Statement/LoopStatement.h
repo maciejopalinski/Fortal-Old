@@ -16,7 +16,7 @@ extern const char *StatementLoopType_printable_strings[];
 class LoopStatement : public StatementHasKind<StatementLoopType>, public StatementHasBody, public StatementHasCondition
 {
     private:
-        shared_ptr<Expression> for_init;
+        shared_ptr<Statement> for_init;
         shared_ptr<Expression> for_iter;
 
     public:
@@ -30,8 +30,8 @@ class LoopStatement : public StatementHasKind<StatementLoopType>, public Stateme
         static string getPrintableKindString(StatementLoopType kind);
         string getPrintableKindString();
 
-        shared_ptr<Expression> getForInit();
-        void setForInit(shared_ptr<Expression> for_init);
+        shared_ptr<Statement> getForInit();
+        void setForInit(shared_ptr<Statement> for_init);
 
         shared_ptr<Expression> getForIter();
         void setForIter(shared_ptr<Expression> for_iter);
