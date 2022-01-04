@@ -2,6 +2,7 @@
 
 const char *StatementType_printable_strings[] =
 {
+    "VariableDefinition",
     "Expression",
     "Block",
     "If",

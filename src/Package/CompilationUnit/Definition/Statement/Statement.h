@@ -10,6 +10,7 @@ using std::make_shared;
 
 enum StatementType
 {
+    STATEMENT_VARIABLE_DEFINITION,
     STATEMENT_EXPRESSION,
     STATEMENT_BLOCK,
     STATEMENT_IF,

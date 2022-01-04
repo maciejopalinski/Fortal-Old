@@ -1,3 +1,4 @@
+#include "VariableDefinitionStatement.h"
 #include "ExpressionStatement.h"
 #include "BlockStatement.h"
 #include "IfStatement.h"
