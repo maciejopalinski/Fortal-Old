@@ -614,11 +614,16 @@ shared_ptr<IfStatement> Parser::getIfStatement(bool required)
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L, true);
 
         // TODO: getExpression();
-        // sif->setCondition(getExpression());
+        sif->setCondition(getExpression(true));
 
         eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_R, true);
 
         sif->setBody(getStatement(true));
+
+        if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_ELSE))
+        {
+            sif->setElseBody(getStatement(true));
+        }
 
         return sif;
     }
