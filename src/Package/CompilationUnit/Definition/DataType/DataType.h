@@ -24,8 +24,6 @@ class DataType
         DataType(shared_ptr<TokenIdentifier> identifier);
         DataType(shared_ptr<TokenKeyword> primitive_type);
 
-        bool isValid();
-
         size_t getArrayDimensions();
         void setArrayDimensions(size_t arrayDimensions);
         size_t addArrayDimension();

@@ -12,25 +12,6 @@ DataType::DataType(shared_ptr<TokenKeyword> primitive_type)
     this->primitive_type = primitive_type;
 }
 
-bool DataType::isValid()
-{
-    if (kind == DATA_TYPE_PRIMITIVE)
-    {
-        if (!primitive_type) return false;
-
-        auto kind = primitive_type->getKind();
-
-        return
-            (kind >= TOKEN_KEYWORD_VOID) &&
-            (kind <= TOKEN_KEYWORD_DOUBLE);
-    }
-    else if (kind == DATA_TYPE_IDENTIFIER)
-    {
-        return primitive_type != nullptr;
-    }
-    return false;
-}
-
 size_t DataType::getArrayDimensions()
 {
     return arrayDimensions;
@@ -54,13 +35,13 @@ DataTypeKind DataType::getKind()
 shared_ptr<TokenIdentifier> DataType::getIdentifier()
 {
     return
-        (getKind() == DATA_TYPE_IDENTIFIER && isValid()) ? identifier : nullptr;
+        (getKind() == DATA_TYPE_IDENTIFIER) ? identifier : nullptr;
 }
 
 shared_ptr<TokenKeyword> DataType::getPrimitiveType()
 {
     return
-        (getKind() == DATA_TYPE_PRIMITIVE && isValid()) ? primitive_type : nullptr;
+        (getKind() == DATA_TYPE_PRIMITIVE) ? primitive_type : nullptr;
 }
 
 string DataType::toString()
