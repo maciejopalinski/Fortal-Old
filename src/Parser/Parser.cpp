@@ -953,6 +953,13 @@ vector<shared_ptr<VariableDefinition>> Parser::getFunctionParameterList()
     return params;
 }
 
+shared_ptr<TokenOperator> Parser::getOperator(bool required)
+{
+    auto eaten = eat(TOKEN_OPERATOR, required);
+    shared_ptr<TokenOperator> op = static_pointer_cast<TokenOperator>(eaten);
+    return op;
+}
+
 shared_ptr<PackageIdentifier> Parser::getPackageIdentifier()
 {
     auto ident = make_shared<PackageIdentifier>(PackageIdentifier());
