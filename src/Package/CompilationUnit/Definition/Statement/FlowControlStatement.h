@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StatementHasKind.h"
+#include "../Expression/Expression.h"
 #include "../../../../Token/TokenKeyword.h"
 
 enum StatementFlowControlType
@@ -13,6 +14,9 @@ enum StatementFlowControlType
 
 class FlowControlStatement : public StatementHasKind<StatementFlowControlType>
 {
+    private:
+        shared_ptr<Expression> expression;
+
     public:
         FlowControlStatement(StatementFlowControlType kind);
 
@@ -21,6 +25,11 @@ class FlowControlStatement : public StatementHasKind<StatementFlowControlType>
             return STATEMENT_FLOW_CONTROL;
         }
 
+        shared_ptr<Expression> getExpression();
+        void setExpression(shared_ptr<Expression> expression);
+
         static string getPrintableKindString(StatementFlowControlType kind);
         string getPrintableKindString();
+
+        string getDebug(string indent, bool last = true, string custom = "");
 };
