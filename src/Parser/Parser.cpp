@@ -929,7 +929,10 @@ shared_ptr<VariableDefinition> Parser::getFunctionParameter(bool required)
     def->setModifiers(mod);
 
     // TODO: getExpression();
-    // def->setDefaultValue(getExpression(true));
+    if (eatKind(TOKEN_OPERATOR, TOKEN_OPERATOR_ASSIGN))
+    {
+        def->setDefaultValue(getExpression(true));
+    }
 
     return def;
 }
