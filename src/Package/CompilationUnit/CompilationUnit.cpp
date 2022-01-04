@@ -67,15 +67,21 @@ string CompilationUnit::getDebug(string indent, bool last)
 
     output += ("[CompilationUnit] " + filename + "\n");
 
-    bool hasDefinitions = !definitions.empty();
+    if (package->getQualifiedIdentifier() != ".")
+    {
+        bool last = true;
+        if (!imports.empty() || !definitions.empty()) last = false;
+
+        output += package->getDebug(indent, "Package", last);
+    }
 
     for (size_t i = 0; i < imports.size(); i++)
     {
         bool isLast = (i + 1 == imports.size());
-        if (hasDefinitions) isLast = false;
+        if (!definitions.empty()) isLast = false;
 
         auto import = imports[i];
-        output += import->getDebug(indent, isLast);
+        output += import->getDebug(indent, "Import", isLast);
     }
 
     for (size_t i = 0; i < definitions.size(); i++)
