@@ -87,7 +87,7 @@ string Definition::getDebug(string indent, bool last, string custom)
 
     output +=
         format(
-            "[%s] ",
+            "[Definition] [%s] ",
             getPrintableTypeString()
         ) + custom + "\n";
 
