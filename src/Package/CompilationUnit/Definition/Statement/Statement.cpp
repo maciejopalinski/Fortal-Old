@@ -60,7 +60,7 @@ string Statement::getDebug(string indent, bool last, string custom)
 
     output +=
         format(
-            "[%s] ",
+            "[Statement] [%s] ",
             getPrintableTypeString()
         ) + custom + "\n";
 
