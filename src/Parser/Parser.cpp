@@ -784,6 +784,13 @@ shared_ptr<EmptyStatement> Parser::getEmptyStatement(bool required)
     return nullptr;
 }
 
+shared_ptr<TokenLiteral> Parser::getLiteral(bool required, string custom_message)
+{
+    auto eaten = eat(TOKEN_LITERAL, required, custom_message);
+    shared_ptr<TokenLiteral> literal = static_pointer_cast<TokenLiteral>(eaten);
+    return literal;
+}
+
 shared_ptr<TokenIdentifier> Parser::getIdentifier(bool required, string custom_message)
 {
     auto eaten = eat(TOKEN_IDENTIFIER, required, custom_message);
