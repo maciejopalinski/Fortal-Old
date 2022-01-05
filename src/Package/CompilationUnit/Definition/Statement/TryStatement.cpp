@@ -20,14 +20,19 @@ void TryStatement::addCatchBlocks(vector<shared_ptr<CatchStatement>> catch_block
 
 string TryStatement::getDebug(string indent, bool last, string custom)
 {
-    bool hasCatchBlocks = !catch_blocks.empty();
+    string output = Statement::getDebug(indent, last, custom);
 
-    string output = StatementHasBody::getDebug(indent, !hasCatchBlocks, custom);
-
-    if (!last)
+    if (last)
+    {
+        indent += "    ";
+    }
+    else
     {
         indent += "│   ";
     }
+
+    last = catch_blocks.empty();
+    output += getBody()->getDebug(indent, last);
 
     for (size_t i = 0; i < catch_blocks.size(); i++)
     {
