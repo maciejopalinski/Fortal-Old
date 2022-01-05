@@ -41,3 +41,39 @@ void LoopStatement::setForIter(shared_ptr<Expression> for_iter)
 {
     this->for_iter = for_iter;
 }
+
+string LoopStatement::getDebug(string indent, bool last, string custom)
+{
+    string output = Statement::getDebug(indent, last, this->getKindString() + custom);
+
+    if (last)
+    {
+        indent += "    ";
+    }
+    else
+    {
+        indent += "│   ";
+    }
+
+    if (for_init)
+    {
+        bool last = !(getCondition() || for_iter || getBody());
+        output += for_init->getDebug(indent, last);
+    }
+    if (getCondition())
+    {
+        bool last = !(for_iter || getBody());
+        output += getCondition()->getDebug(indent, last);
+    }
+    if (for_iter)
+    {
+        bool last = !getBody();
+        output += for_iter->getDebug(indent, last);
+    }
+    if (getBody())
+    {
+        output += getBody()->getDebug(indent);
+    }
+
+    return output;
+}
