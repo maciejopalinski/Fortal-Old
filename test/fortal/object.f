@@ -84,7 +84,7 @@ public static entrypoint void main2(String[] args = test, int32 test) throws Exc
     if (i == 1 && test);
 
     do {
-        
+
     }
     while(i == 1);
 }
