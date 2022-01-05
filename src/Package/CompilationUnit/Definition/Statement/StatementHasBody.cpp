@@ -23,7 +23,7 @@ string StatementHasBody::getDebug(string indent, bool last, string custom)
         indent += "│   ";
     }
 
-    output += getBody()->getDebug(indent, last);
+    output += getBody()->getDebug(indent);
 
     return output;
 }
