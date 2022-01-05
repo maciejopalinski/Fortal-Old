@@ -89,7 +89,12 @@ string Definition::getDebug(string indent, bool last, string custom)
         format(
             "[Definition] [%s] ",
             getPrintableTypeString()
-        ) + custom + "\n";
+        ) + custom;
+
+    if (output[output.size() - 1] != '\n')
+    {
+        output += "\n";
+    }
 
     return output;
 }
