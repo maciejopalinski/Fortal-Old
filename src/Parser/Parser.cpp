@@ -95,18 +95,21 @@ void Parser::clearState(size_t slot)
     saved_state_token_idx[slot] = 0;
 }
 
+Location Parser::getCurrentTokenLocation()
+{
+    if (current_token) return current_token->location;
+    return lexer->getLocation();
+}
+
+string Parser::getCurrentTokenDescription()
+{
+    if (current_token) return current_token->getDescription();
+    return "end of file";
+}
+
 bool Parser::expect(TokenType token_type, bool report_error, string custom_message)
 {
-    if (!current_token)
-    {
-        if (report_error)
-        {
-            error_handler.throw_unexpected_eof(lexer->getLocation());
-        }
-        return false;
-    }
-
-    if (current_token->getType() == token_type)
+    if (current_token && current_token->getType() == token_type)
     {
         return true;
     }
@@ -121,11 +124,11 @@ bool Parser::expect(TokenType token_type, bool report_error, string custom_messa
         }
         else
         {
-            string unexpected = current_token->getDescription();
+            string unexpected = getCurrentTokenDescription();
             string expected = Token::getDescription(token_type);
 
             error_handler.throw_unexpected_token(
-                current_token->location,
+                getCurrentTokenLocation(),
                 unexpected,
                 expected
             );
@@ -174,12 +177,8 @@ shared_ptr<Expression> Parser::getExpression(bool required, size_t op_lvl)
 
         if (!e && required)
         {
-            Location location;
-            if (!current_token) location = this->lexer->getLocation();
-            else location = current_token->location;
-
             error_handler.throw_unexpected_token(
-                location,
+                getCurrentTokenLocation(),
                 "expected expression"
             );
         }
@@ -579,12 +578,8 @@ shared_ptr<Statement> Parser::getStatement(bool required)
     if ((s = getExpressionStatement())) return s;
     if (!s && required)
     {
-        Location location;
-        if (!current_token) location = this->lexer->getLocation();
-        else location = current_token->location;
-
         error_handler.throw_unexpected_token(
-            location,
+            getCurrentTokenLocation(),
             "expected statement"
         );
     }
@@ -662,19 +657,14 @@ shared_ptr<LoopStatement> Parser::getLoopStatement(bool required)
     if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_FOR)) loop_type = STATEMENT_LOOP_FOR;
     else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_WHILE)) loop_type = STATEMENT_LOOP_WHILE;
     else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_DO)) loop_type = STATEMENT_LOOP_DO_WHILE;
-    else
+    else if (required)
     {
-        if (!required) return nullptr;
-
-        Location location;
-        if (!current_token) location = this->lexer->getLocation();
-        else location = current_token->location;
-
         error_handler.throw_unexpected_token(
-            location,
+            getCurrentTokenLocation(),
             "expected loop keyword"
         );
     }
+    else return nullptr;
 
     auto loop = make_shared<LoopStatement>(LoopStatement(loop_type));
 
@@ -728,19 +718,14 @@ shared_ptr<FlowControlStatement> Parser::getFlowControlStatement(bool required)
     else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_CONTINUE)) flow_type = STATEMENT_FLOW_CONTROL_CONTINUE;
     else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_RETURN)) flow_type = STATEMENT_FLOW_CONTROL_RETURN;
     else if (eatKind(TOKEN_KEYWORD, TOKEN_KEYWORD_THROW)) flow_type = STATEMENT_FLOW_CONTROL_THROW;
-    else
+    else if (required)
     {
-        if (!required) return nullptr;
-
-        Location location;
-        if (!current_token) location = this->lexer->getLocation();
-        else location = current_token->location;
-
         error_handler.throw_unexpected_token(
-            location,
+            getCurrentTokenLocation(),
             "expected flow control statement"
         );
     }
+    else return nullptr;
 
     auto flow = make_shared<FlowControlStatement>(FlowControlStatement(flow_type));
 
@@ -942,12 +927,8 @@ shared_ptr<DataType> Parser::getDataType(bool required)
     }
     else if (required)
     {
-        Location location;
-        if (!current_token) location = this->lexer->getLocation();
-        else location = current_token->location;
-
         error_handler.throw_unexpected_token(
-            location,
+            getCurrentTokenLocation(),
             "expected data type"
         );
     }
@@ -1054,16 +1035,13 @@ shared_ptr<Definition> Parser::getDefinition(bool required)
 
     if (!def && required)
     {
-        Location location;
-        if (!current_token) location = this->lexer->getLocation();
-        else location = current_token->location;
-
         error_handler.throw_unexpected_token(
-            location,
+            getCurrentTokenLocation(),
             "expected definition"
         );
     }
-    else if (def) {
+    else if (def)
+    {
         def->setModifiers(mod);
     }
 

@@ -38,6 +38,9 @@ class Parser
         void loadState(size_t slot);
         void clearState(size_t slot);
 
+        Location getCurrentTokenLocation();
+        string getCurrentTokenDescription();
+
         template<class T>
         bool expectKind(TokenType token_type, T token_kind, bool report_error = false, string custom_message = "");
         bool expect(TokenType token_type, bool report_error = false, string custom_message = "");
@@ -114,16 +117,7 @@ class Parser
 template<class T>
 bool Parser::expectKind(TokenType token_type, T token_kind, bool report_error, string custom_message)
 {
-    if (!current_token)
-    {
-        if (report_error)
-        {
-            error_handler.throw_unexpected_eof(lexer->getLocation());
-        }
-        return false;
-    }
-
-    if (current_token->getType() == token_type)
+    if (current_token && current_token->getType() == token_type)
     {
         shared_ptr<TokenHasKind<T>> token = static_pointer_cast<TokenHasKind<T>>(current_token);
 
@@ -144,11 +138,11 @@ bool Parser::expectKind(TokenType token_type, T token_kind, bool report_error, s
         }
         else
         {
-            string unexpected = current_token->getDescription();
+            string unexpected = getCurrentTokenDescription();
             string expected = TokenHasKind<T>::getDescription(token_kind);
 
             error_handler.throw_unexpected_token(
-                current_token->location,
+                getCurrentTokenLocation(),
                 unexpected,
                 expected
             );
