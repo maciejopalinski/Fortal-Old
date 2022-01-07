@@ -26,6 +26,7 @@ void Lexer::loadFromFile(const char *filename)
     {
         error_handler.log_no_such_file_or_directory(filename);
         error_handler.throw_no_input_files();
+        return;
     }
 
     // get file size
