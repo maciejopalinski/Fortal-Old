@@ -58,6 +58,8 @@ $(TMP_DIR)/memcheck.out: $(TARGET)
 	@mkdir -p $(TMP_DIR)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=$(TMP_DIR)/memcheck.out $(TARGET) $(ARGS)
 
+cppcheck:
+	cppcheck $(SRC_DIR) --std=c++17 --enable=all --suppress=noExplicitConstructor --suppress=useStlAlgorithm --suppress=wrongPrintfScanfArgNum --suppress=cstyleCast --force -q
 
 
 
