@@ -10,7 +10,7 @@ void StatementHasBody::setBody(shared_ptr<Statement> body)
     this->body = body;
 }
 
-string StatementHasBody::getDebug(string indent, bool last, string custom)
+string StatementHasBody::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, custom);
 

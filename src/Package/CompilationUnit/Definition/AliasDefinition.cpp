@@ -16,7 +16,7 @@ shared_ptr<DataType> AliasDefinition::getTarget()
     return target;
 }
 
-string AliasDefinition::getDebug(string indent, bool last, string custom)
+string AliasDefinition::getDebug(string indent, bool last, const string &custom)
 {
     return
         Definition::getDebug(

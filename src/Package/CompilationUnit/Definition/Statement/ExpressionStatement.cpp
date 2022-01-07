@@ -15,7 +15,7 @@ void ExpressionStatement::setExpression(shared_ptr<Expression> expression)
     this->expression = expression;
 }
 
-string ExpressionStatement::getDebug(string indent, bool last, string custom)
+string ExpressionStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, custom);
 

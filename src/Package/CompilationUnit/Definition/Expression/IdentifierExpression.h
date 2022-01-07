@@ -19,5 +19,5 @@ class IdentifierExpression : public Expression
         shared_ptr<TokenIdentifier> getIdentifier();
         void setIdentifier(shared_ptr<TokenIdentifier> identifier);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

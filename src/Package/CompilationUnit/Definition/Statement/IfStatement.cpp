@@ -10,7 +10,7 @@ void IfStatement::setElseBody(shared_ptr<Statement> else_body)
     this->else_body = else_body;
 }
 
-string IfStatement::getDebug(string indent, bool last, string custom)
+string IfStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, custom);
 

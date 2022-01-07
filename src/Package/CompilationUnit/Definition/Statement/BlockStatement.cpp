@@ -18,7 +18,7 @@ void BlockStatement::addStatements(vector<shared_ptr<Statement>> statements)
     }
 }
 
-string BlockStatement::getDebug(string indent, bool last, string custom)
+string BlockStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, custom);
 

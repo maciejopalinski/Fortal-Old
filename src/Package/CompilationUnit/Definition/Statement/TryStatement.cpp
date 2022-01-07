@@ -18,7 +18,7 @@ void TryStatement::addCatchBlocks(vector<shared_ptr<CatchStatement>> catch_block
     }
 }
 
-string TryStatement::getDebug(string indent, bool last, string custom)
+string TryStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, custom);
 

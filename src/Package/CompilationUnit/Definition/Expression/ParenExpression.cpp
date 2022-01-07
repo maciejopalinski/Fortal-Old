@@ -15,7 +15,7 @@ void ParenExpression::setExpression(shared_ptr<Expression> expression)
     this->expression = expression;
 }
 
-string ParenExpression::getDebug(string indent, bool last, string custom)
+string ParenExpression::getDebug(string indent, bool last, const string &custom)
 {
     string output = Expression::getDebug(indent, last, custom);
 

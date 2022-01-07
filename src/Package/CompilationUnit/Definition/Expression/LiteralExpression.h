@@ -19,5 +19,5 @@ class LiteralExpression : public Expression
         shared_ptr<TokenLiteral> getLiteral();
         void setLiteral(shared_ptr<TokenLiteral> literal);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

@@ -19,5 +19,5 @@ class AliasDefinition : public Definition
         void setTarget(shared_ptr<DataType> target);
         shared_ptr<DataType> getTarget();
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

@@ -20,5 +20,5 @@ class TryStatement : public StatementHasBody
         void addCatchBlock(shared_ptr<CatchStatement> catch_block);
         void addCatchBlocks(vector<shared_ptr<CatchStatement>> catch_blocks);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

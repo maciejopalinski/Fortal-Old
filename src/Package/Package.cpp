@@ -1,7 +1,7 @@
 #include "Package.h"
 #include <stdexcept>
 
-Package::Package(string full_name)
+Package::Package(const string &full_name)
 {
     Package(split_string(full_name, "."));
 }
@@ -18,7 +18,7 @@ Package::Package(vector<string> name_vector)
     this->name = name_vector.back();
 }
 
-void Package::addChildPackage(string package_name)
+void Package::addChildPackage(const string &package_name)
 {
     addChildPackage(split_string(package_name, "."));
 }
@@ -46,7 +46,7 @@ void Package::addChildPackage(vector<string> name_vector, size_t step)
     }
 }
 
-shared_ptr<Package> Package::getChildPackageByName(string full_name)
+shared_ptr<Package> Package::getChildPackageByName(const string &full_name)
 {
     return getChildPackageByName(split_string(full_name, "."));
 }

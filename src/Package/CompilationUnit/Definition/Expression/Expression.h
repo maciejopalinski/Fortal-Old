@@ -32,5 +32,5 @@ class Expression
         static const char *getPrintableTypeString(ExpressionType type);
         const char *getPrintableTypeString();
 
-        virtual string getDebug(string indent, bool last = true, string custom = "");
+        virtual string getDebug(string indent, bool last = true, const string &custom = "");
 };

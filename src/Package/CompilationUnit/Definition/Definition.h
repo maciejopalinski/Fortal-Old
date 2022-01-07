@@ -41,5 +41,5 @@ class Definition
         shared_ptr<TokenIdentifier> getIdentifier();
         void setIdentifier(shared_ptr<TokenIdentifier> identifier);
 
-        virtual string getDebug(string indent, bool last = true, string custom = "");
+        virtual string getDebug(string indent, bool last = true, const string &custom = "");
 };

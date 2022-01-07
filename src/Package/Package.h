@@ -17,13 +17,13 @@ class Package : std::enable_shared_from_this<Package>
         vector<shared_ptr<CompilationUnit>> compilation_units;
 
     public:
-        Package(string full_name = ".");
+        Package(const string &full_name = ".");
         Package(vector<string> name_vector);
 
-        void addChildPackage(string package_name);
+        void addChildPackage(const string &package_name);
         void addChildPackage(vector<string> name_vector, size_t step = 0);
 
-        shared_ptr<Package> getChildPackageByName(string full_name);
+        shared_ptr<Package> getChildPackageByName(const string &full_name);
         shared_ptr<Package> getChildPackageByName(vector<string> name_vector);
         vector<shared_ptr<Package>> getChildPackages();
 

@@ -37,5 +37,5 @@ class FunctionDefinition : public Definition
         shared_ptr<BlockStatement> getBody();
         void setBody(shared_ptr<BlockStatement> body);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

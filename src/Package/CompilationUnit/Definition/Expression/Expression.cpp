@@ -39,7 +39,7 @@ const char *Expression::getPrintableTypeString()
     return getPrintableTypeString(getType());
 }
 
-string Expression::getDebug(string indent, bool last, string custom)
+string Expression::getDebug(string indent, bool last, const string &custom)
 {
     string output = indent;
 

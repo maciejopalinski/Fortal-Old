@@ -42,7 +42,7 @@ void LoopStatement::setForIter(shared_ptr<Expression> for_iter)
     this->for_iter = for_iter;
 }
 
-string LoopStatement::getDebug(string indent, bool last, string custom)
+string LoopStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, this->getKindString() + custom);
 

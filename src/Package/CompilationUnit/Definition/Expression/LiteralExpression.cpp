@@ -15,7 +15,7 @@ void LiteralExpression::setLiteral(shared_ptr<TokenLiteral> literal)
     this->literal = literal;
 }
 
-string LiteralExpression::getDebug(string indent, bool last, string custom)
+string LiteralExpression::getDebug(string indent, bool last, const string &custom)
 {
     return Expression::getDebug(indent, last, literal->getValueString() + custom);
 }

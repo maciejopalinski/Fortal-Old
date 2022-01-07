@@ -1,7 +1,7 @@
 #include "CompilationUnit.h"
 #include "../Package.h"
 
-CompilationUnit::CompilationUnit(shared_ptr<PackageIdentifier> package, string filename)
+CompilationUnit::CompilationUnit(shared_ptr<PackageIdentifier> package, const string &filename)
 {
     this->package = package;
     this->filename = filename;

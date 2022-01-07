@@ -17,5 +17,5 @@ class IfStatement : public StatementHasCondition, public StatementHasBody
         shared_ptr<Statement> getElseBody();
         void setElseBody(shared_ptr<Statement> else_body);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

@@ -56,9 +56,9 @@ void FunctionDefinition::setBody(shared_ptr<BlockStatement> body)
     this->body = body;
 }
 
-string FunctionDefinition::getDebug(string indent, bool last, string custom)
+string FunctionDefinition::getDebug(string indent, bool last, const string &c)
 {
-    custom = return_type->toString();
+    string custom = return_type->toString();
     custom += " ";
     custom += getIdentifier()->getName();
     custom += "(";
@@ -72,6 +72,7 @@ string FunctionDefinition::getDebug(string indent, bool last, string custom)
     }
 
     custom += ")";
+    custom += c;
 
     string output = Definition::getDebug(indent, last, custom);
 

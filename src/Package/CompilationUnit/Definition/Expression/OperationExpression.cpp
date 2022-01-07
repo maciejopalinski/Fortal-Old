@@ -90,13 +90,15 @@ string OperationExpression::getPrintableKindString()
     return getPrintableKindString(getKind());
 }
 
-string OperationExpression::getDebug(string indent, bool last, string custom)
+string OperationExpression::getDebug(string indent, bool last, const string &c)
 {
+    string custom;
     if (t_operator)
     {
         custom += " ";
         custom += t_operator->getPrintableKindString();
     }
+    custom += c;
 
     string output = Expression::getDebug(indent, last, getPrintableKindString() + custom);
 

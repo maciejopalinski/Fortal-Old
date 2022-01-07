@@ -23,6 +23,6 @@ class VariableDefinition : public Definition
         void setDefaultValue(shared_ptr<Expression> default_value);
         shared_ptr<Expression> getDefaultValue();
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
         string getFunctionParamDebug(string indent, bool last = false, bool simple = true);
 };

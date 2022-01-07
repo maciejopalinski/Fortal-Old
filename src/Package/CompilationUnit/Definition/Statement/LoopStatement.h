@@ -36,5 +36,5 @@ class LoopStatement : public StatementHasKind<StatementLoopType>, public Stateme
         shared_ptr<Expression> getForIter();
         void setForIter(shared_ptr<Expression> for_iter);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

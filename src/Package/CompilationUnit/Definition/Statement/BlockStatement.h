@@ -17,5 +17,5 @@ class BlockStatement : public Statement
         void addStatement(shared_ptr<Statement> statement);
         void addStatements(vector<shared_ptr<Statement>> statements);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

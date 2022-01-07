@@ -53,5 +53,5 @@ class OperationExpression : public ExpressionHasKind<ExpressionOperationType>
         static string getPrintableKindString(ExpressionOperationType kind);
         string getPrintableKindString();
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

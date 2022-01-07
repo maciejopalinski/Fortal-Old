@@ -65,11 +65,12 @@ void Definition::setIdentifier(shared_ptr<TokenIdentifier> identifier)
     this->identifier = identifier;
 }
 
-string Definition::getDebug(string indent, bool last, string custom)
+string Definition::getDebug(string indent, bool last, const string &c)
 {
     string output = indent;
 
-    if (custom.empty())
+    string custom = c;
+    if (c.empty())
     {
         custom = getIdentifier()->getName();
     }

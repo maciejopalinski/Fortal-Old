@@ -19,7 +19,7 @@ class CompilationUnit
         vector<shared_ptr<Definition>> definitions;
 
     public:
-        CompilationUnit(shared_ptr<PackageIdentifier> package, string filename);
+        CompilationUnit(shared_ptr<PackageIdentifier> package, const string &filename);
 
         string getFilename();
         shared_ptr<PackageIdentifier> getPackageIdentifier();

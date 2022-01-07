@@ -31,5 +31,5 @@ class FlowControlStatement : public StatementHasKind<StatementFlowControlType>
         static string getPrintableKindString(StatementFlowControlType kind);
         string getPrintableKindString();
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

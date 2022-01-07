@@ -15,7 +15,7 @@ void IdentifierExpression::setIdentifier(shared_ptr<TokenIdentifier> identifier)
     this->identifier = identifier;
 }
 
-string IdentifierExpression::getDebug(string indent, bool last, string custom)
+string IdentifierExpression::getDebug(string indent, bool last, const string &custom)
 {
     string output = Expression::getDebug(indent, last, identifier->getName() + custom);
 

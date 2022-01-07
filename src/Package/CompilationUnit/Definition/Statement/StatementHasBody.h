@@ -12,5 +12,5 @@ class StatementHasBody : virtual public Statement
         shared_ptr<Statement> getBody();
         void setBody(shared_ptr<Statement> body);
 
-        virtual string getDebug(string indent, bool last = true, string custom = "");
+        virtual string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

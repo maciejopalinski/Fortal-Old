@@ -20,7 +20,7 @@ shared_ptr<Expression> VariableDefinition::getDefaultValue()
     return default_value;
 }
 
-string VariableDefinition::getDebug(string indent, bool last, string custom)
+string VariableDefinition::getDebug(string indent, bool last, const string &custom)
 {
     return Definition::getDebug(indent, last, getFunctionParamDebug(indent, last, false) + custom);
 }

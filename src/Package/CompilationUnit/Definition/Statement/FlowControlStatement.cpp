@@ -24,7 +24,7 @@ string FlowControlStatement::getPrintableKindString()
     return getPrintableKindString(getKind());
 }
 
-string FlowControlStatement::getDebug(string indent, bool last, string custom)
+string FlowControlStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, getPrintableKindString() + custom);
 

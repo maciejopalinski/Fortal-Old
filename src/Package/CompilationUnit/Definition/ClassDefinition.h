@@ -26,5 +26,5 @@ class ClassDefinition : public Definition
         void addExtends(vector<shared_ptr<TokenIdentifier>> extends);
         void addExtend(shared_ptr<TokenIdentifier> extend);
 
-        string getDebug(string indent, bool last = true, string custom = "");
+        string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

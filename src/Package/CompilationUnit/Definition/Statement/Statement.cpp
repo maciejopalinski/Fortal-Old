@@ -44,7 +44,7 @@ const char *Statement::getPrintableTypeString()
     return getPrintableTypeString(getType());
 }
 
-string Statement::getDebug(string indent, bool last, string custom)
+string Statement::getDebug(string indent, bool last, const string &custom)
 {
     string output = indent;
 

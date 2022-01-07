@@ -29,13 +29,13 @@ class ErrorHandler
 
         void log_no_such_file_or_directory(const char *filename);
 
-        void throw_invalid_token(Location location, const char c);
+        void throw_invalid_token(const Location &location, const char c);
 
-        void throw_unexpected_eof(Location location);
-        void throw_unexpected_token(Location location, string custom_message);
-        void throw_unexpected_token(Location location, string unexpected, string expected);
+        void throw_unexpected_eof(const Location &location);
+        void throw_unexpected_token(const Location &location, string custom_message);
+        void throw_unexpected_token(const Location &location, string unexpected, string expected);
 
-        void log_empty_character_literal(Location location);
+        void log_empty_character_literal(const Location &location);
 };
 
 template<class... Args>

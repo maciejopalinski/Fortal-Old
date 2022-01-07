@@ -49,18 +49,18 @@ void ErrorHandler::log_no_such_file_or_directory(const char *filename)
     log(E_FATAL, "%s: No such file or directory", filename);
 }
 
-void ErrorHandler::throw_invalid_token(Location location, const char c)
+void ErrorHandler::throw_invalid_token(const Location &location, const char c)
 {
     logLocation(E_ERROR, location, "invalid token '%c'", c);
     terminate_compilation();
 }
 
-void ErrorHandler::throw_unexpected_eof(Location location)
+void ErrorHandler::throw_unexpected_eof(const Location &location)
 {
     throw_unexpected_token(location, "unexpected end of file");
 }
 
-void ErrorHandler::throw_unexpected_token(Location location, string custom_message)
+void ErrorHandler::throw_unexpected_token(const Location &location, string custom_message)
 {
     logLocation(
         E_ERROR,
@@ -71,7 +71,7 @@ void ErrorHandler::throw_unexpected_token(Location location, string custom_messa
     terminate_compilation();
 }
 
-void ErrorHandler::throw_unexpected_token(Location location, string unexpected, string expected)
+void ErrorHandler::throw_unexpected_token(const Location &location, string unexpected, string expected)
 {
     return
         throw_unexpected_token(
@@ -84,7 +84,7 @@ void ErrorHandler::throw_unexpected_token(Location location, string unexpected, 
         );
 }
 
-void ErrorHandler::log_empty_character_literal(Location location)
+void ErrorHandler::log_empty_character_literal(const Location &location)
 {
     logLocation(
         E_WARN, location, "empty string literal is not allowed, assuming it is integer 0");

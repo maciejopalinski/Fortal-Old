@@ -31,9 +31,9 @@ void ClassDefinition::addExtend(shared_ptr<TokenIdentifier> extend)
     extends.push_back(extend);
 }
 
-string ClassDefinition::getDebug(string indent, bool last, string custom)
+string ClassDefinition::getDebug(string indent, bool last, const string &c)
 {
-    custom = getIdentifier()->getName();
+    string custom = getIdentifier()->getName();
 
     if (!extends.empty())
     {
@@ -47,6 +47,7 @@ string ClassDefinition::getDebug(string indent, bool last, string custom)
             if (!isLast) custom += ", ";
         }
     }
+    custom += c;
 
     string output = Definition::getDebug(indent, last, custom);
 
