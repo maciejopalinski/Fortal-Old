@@ -14,7 +14,7 @@ class ClassDefinition : public Definition
     public:
         ClassDefinition(shared_ptr<TokenIdentifier> identifier);
 
-        DefinitionType getType()
+        DefinitionType getType() override
         {
             return DEFINITION_CLASS;
         }

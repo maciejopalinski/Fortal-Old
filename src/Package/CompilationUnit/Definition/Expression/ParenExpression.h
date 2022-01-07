@@ -10,7 +10,7 @@ class ParenExpression : public Expression
     public:
         ParenExpression(shared_ptr<Expression> expression);
 
-        ExpressionType getType()
+        ExpressionType getType() override
         {
             return EXPRESSION_PAREN;
         }

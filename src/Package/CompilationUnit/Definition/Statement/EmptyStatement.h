@@ -5,7 +5,7 @@
 class EmptyStatement : public Statement
 {
     public:
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_EMPTY;
         }

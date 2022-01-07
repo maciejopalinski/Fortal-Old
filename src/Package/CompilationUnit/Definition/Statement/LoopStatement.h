@@ -22,13 +22,13 @@ class LoopStatement : public StatementHasKind<StatementLoopType>, public Stateme
     public:
         LoopStatement(StatementLoopType kind) : StatementHasKind(kind) {}
 
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_LOOP;
         }
 
         static string getPrintableKindString(StatementLoopType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         shared_ptr<Statement> getForInit();
         void setForInit(shared_ptr<Statement> for_init);

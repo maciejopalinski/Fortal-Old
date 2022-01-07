@@ -13,7 +13,7 @@ class VariableDefinition : public Definition
     public:
         VariableDefinition(shared_ptr<DataType> data_type, shared_ptr<TokenIdentifier> identifier);
 
-        DefinitionType getType()
+        DefinitionType getType() override
         {
             return DEFINITION_VARIABLE;
         }

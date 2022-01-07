@@ -8,7 +8,7 @@ class BlockStatement : public Statement
         vector<shared_ptr<Statement>> statements;
 
     public:
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_BLOCK;
         }

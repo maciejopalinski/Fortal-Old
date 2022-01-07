@@ -56,13 +56,13 @@ class TokenKeyword : public TokenHasKind<TokenKeywordType>
 
         TokenKeyword(TokenKeywordType kind);
 
-        TokenType getType()
+        TokenType getType() override
         {
             return TOKEN_KEYWORD;
         }
 
         static string getPrintableKindString(TokenKeywordType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         static TokenKeywordType getLexerTypeFromMatch(string match);
 };

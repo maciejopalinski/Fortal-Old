@@ -32,7 +32,7 @@ class OperationExpression : public ExpressionHasKind<ExpressionOperationType>
         OperationExpression(ExpressionOperationType kind = EXPRESSION_OPERATION_INVALID);
         virtual ~OperationExpression();
 
-        ExpressionType getType()
+        ExpressionType getType() override
         {
             return EXPRESSION_OPERATION;
         }
@@ -51,7 +51,7 @@ class OperationExpression : public ExpressionHasKind<ExpressionOperationType>
         void addCallArg(shared_ptr<Expression> call_arg);
 
         static string getPrintableKindString(ExpressionOperationType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         string getDebug(string indent, bool last = true, const string &custom = "") override;
 };

@@ -9,7 +9,7 @@ class IfStatement : public StatementHasCondition, public StatementHasBody
         shared_ptr<Statement> else_body;
 
     public:
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_IF;
         }

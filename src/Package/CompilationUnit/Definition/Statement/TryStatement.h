@@ -11,7 +11,7 @@ class TryStatement : public StatementHasBody
         vector<shared_ptr<CatchStatement>> catch_blocks;
 
     public:
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_TRY;
         }

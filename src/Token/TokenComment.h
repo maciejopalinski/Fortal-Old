@@ -17,7 +17,7 @@ class TokenComment : public TokenHasKind<TokenCommentKind>
     public:
         TokenComment(TokenCommentKind kind, const string &content = "");
 
-        TokenType getType()
+        TokenType getType() override
         {
             return TOKEN_COMMENT;
         }
@@ -26,7 +26,7 @@ class TokenComment : public TokenHasKind<TokenCommentKind>
         void setContent(const string &content);
 
         static string getPrintableKindString(TokenCommentKind kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         string getDebug(const string &inside = "") override;
 };

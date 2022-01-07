@@ -31,7 +31,7 @@ class TokenLiteral : public TokenHasKind<TokenLiteralType>
 
         ~TokenLiteral();
 
-        TokenType getType()
+        TokenType getType() override
         {
             return TOKEN_LITERAL;
         }
@@ -50,7 +50,7 @@ class TokenLiteral : public TokenHasKind<TokenLiteralType>
         string getValueString();
 
         static string getPrintableKindString(TokenLiteralType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         string getDebug(const string &inside = "") override;
 };

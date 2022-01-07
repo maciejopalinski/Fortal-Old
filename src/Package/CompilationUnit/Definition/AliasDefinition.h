@@ -11,7 +11,7 @@ class AliasDefinition : public Definition
     public:
         AliasDefinition(shared_ptr<TokenIdentifier> identifier, shared_ptr<DataType> target);
 
-        DefinitionType getType()
+        DefinitionType getType() override
         {
             return DEFINITION_ALIAS;
         }

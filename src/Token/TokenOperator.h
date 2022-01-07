@@ -51,13 +51,13 @@ class TokenOperator : public TokenHasKind<TokenOperatorType>
 
         TokenOperator(TokenOperatorType kind);
 
-        TokenType getType()
+        TokenType getType() override
         {
             return TOKEN_OPERATOR;
         }
 
         static string getPrintableKindString(TokenOperatorType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         static TokenOperatorType getLexerTypeFromMatch(string match);
 };

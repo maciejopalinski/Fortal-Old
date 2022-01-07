@@ -11,7 +11,7 @@ class IdentifierExpression : public Expression
     public:
         IdentifierExpression(shared_ptr<TokenIdentifier> identifier);
 
-        ExpressionType getType()
+        ExpressionType getType() override
         {
             return EXPRESSION_IDENTIFIER;
         }

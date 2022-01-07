@@ -9,7 +9,7 @@ class TokenIdentifier : public Token
     public:
         TokenIdentifier(string name = "");
 
-        TokenType getType()
+        TokenType getType() override
         {
             return TOKEN_IDENTIFIER;
         }

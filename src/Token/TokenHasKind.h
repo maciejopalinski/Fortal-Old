@@ -55,7 +55,7 @@ class TokenHasKind : public Token
 
         static string getDescription(T kind);
 
-        virtual string getDescription()
+        virtual string getDescription() override
         {
             return
                 format(

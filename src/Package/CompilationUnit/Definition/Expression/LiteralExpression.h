@@ -11,7 +11,7 @@ class LiteralExpression : public Expression
     public:
         LiteralExpression(shared_ptr<TokenLiteral> literal);
 
-        ExpressionType getType()
+        ExpressionType getType() override
         {
             return EXPRESSION_LITERAL;
         }

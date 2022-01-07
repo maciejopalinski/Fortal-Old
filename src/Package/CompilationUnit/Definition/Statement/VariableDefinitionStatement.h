@@ -11,7 +11,7 @@ class VariableDefinitionStatement : public Statement
     public:
         VariableDefinitionStatement(shared_ptr<VariableDefinition> definition);
 
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_VARIABLE_DEFINITION;
         }

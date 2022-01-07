@@ -19,7 +19,7 @@ class FunctionDefinition : public Definition
     public:
         FunctionDefinition(shared_ptr<DataType> return_type, shared_ptr<TokenIdentifier> identifier);
 
-        DefinitionType getType()
+        DefinitionType getType() override
         {
             return DEFINITION_FUNCTION;
         }

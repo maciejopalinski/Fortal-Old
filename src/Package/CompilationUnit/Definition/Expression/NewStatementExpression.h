@@ -10,7 +10,7 @@ class NewStatementExpression : public Expression
     public:
         NewStatementExpression(shared_ptr<Expression> expression);
 
-        ExpressionType getType()
+        ExpressionType getType() override
         {
             return EXPRESSION_NEW_STATEMENT;
         }

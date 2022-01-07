@@ -11,7 +11,7 @@ class ExpressionStatement : public Statement
     public:
         ExpressionStatement(shared_ptr<Expression> expression);
 
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_EXPRESSION;
         }

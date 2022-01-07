@@ -11,5 +11,5 @@ class PackageIdentifier : public QualifiedIdentifier
         bool getWildcard();
         void setWildcard(bool wildcard);
 
-        string getQualifiedIdentifier();
+        string getQualifiedIdentifier() override;
 };

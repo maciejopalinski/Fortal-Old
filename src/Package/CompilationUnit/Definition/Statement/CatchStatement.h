@@ -9,7 +9,7 @@ class CatchStatement : public StatementHasBody
         shared_ptr<VariableDefinition> catch_error;
 
     public:
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_CATCH;
         }

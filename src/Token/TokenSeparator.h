@@ -22,13 +22,13 @@ class TokenSeparator : public TokenHasKind<TokenSeparatorType>
 
         TokenSeparator(TokenSeparatorType kind);
 
-        TokenType getType()
+        TokenType getType() override
         {
             return TOKEN_SEPARATOR;
         }
 
         static string getPrintableKindString(TokenSeparatorType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         static TokenSeparatorType getLexerTypeFromMatch(char match);
 };

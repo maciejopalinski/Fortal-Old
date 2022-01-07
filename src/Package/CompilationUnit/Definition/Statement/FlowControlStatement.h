@@ -20,7 +20,7 @@ class FlowControlStatement : public StatementHasKind<StatementFlowControlType>
     public:
         FlowControlStatement(StatementFlowControlType kind);
 
-        StatementType getType()
+        StatementType getType() override
         {
             return STATEMENT_FLOW_CONTROL;
         }
@@ -29,7 +29,7 @@ class FlowControlStatement : public StatementHasKind<StatementFlowControlType>
         void setExpression(shared_ptr<Expression> expression);
 
         static string getPrintableKindString(StatementFlowControlType kind);
-        string getPrintableKindString();
+        string getPrintableKindString() override;
 
         string getDebug(string indent, bool last = true, const string &custom = "") override;
 };
