@@ -1,8 +1,6 @@
 #include "Package.h"
 #include <stdexcept>
 
-Package::Package() {}
-
 Package::Package(string full_name)
 {
     Package(split_string(full_name, "."));

@@ -17,8 +17,7 @@ class Package : std::enable_shared_from_this<Package>
         vector<shared_ptr<CompilationUnit>> compilation_units;
 
     public:
-        Package();
-        Package(string full_name);
+        Package(string full_name = ".");
         Package(vector<string> name_vector);
 
         void addChildPackage(string package_name);
