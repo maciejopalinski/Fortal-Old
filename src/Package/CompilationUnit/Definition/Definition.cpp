@@ -78,12 +78,10 @@ string Definition::getDebug(string indent, bool last, const string &c)
     if (last)
     {
         output += "└── ";
-        indent += "    ";
     }
     else
     {
         output += "├── ";
-        indent += "│   ";
     }
 
     output +=

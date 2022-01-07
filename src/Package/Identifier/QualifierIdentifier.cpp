@@ -36,12 +36,10 @@ string QualifiedIdentifier::getDebug(string indent, string name, bool last)
     if (last)
     {
         output += "└── ";
-        indent += "    ";
     }
     else
     {
         output += "├── ";
-        indent += "│   ";
     }
 
     output +=

@@ -51,12 +51,10 @@ string Statement::getDebug(string indent, bool last, const string &custom)
     if (last)
     {
         output += "└── ";
-        indent += "    ";
     }
     else
     {
         output += "├── ";
-        indent += "│   ";
     }
 
     output +=
