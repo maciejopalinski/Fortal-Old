@@ -7,7 +7,7 @@ class TokenIdentifier : public Token
         string name;
 
     public:
-        TokenIdentifier(string name);
+        TokenIdentifier(string name = "");
 
         TokenType getType()
         {
