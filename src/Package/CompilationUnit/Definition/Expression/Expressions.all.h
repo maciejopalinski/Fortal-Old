@@ -1,3 +1,5 @@
+#pragma once
+
 #include "LiteralExpression.h"
 #include "NewStatementExpression.h"
 #include "IdentifierExpression.h"

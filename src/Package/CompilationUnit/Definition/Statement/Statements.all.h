@@ -1,3 +1,5 @@
+#pragma once
+
 #include "VariableDefinitionStatement.h"
 #include "ExpressionStatement.h"
 #include "BlockStatement.h"
