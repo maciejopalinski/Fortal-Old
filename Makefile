@@ -63,8 +63,14 @@ $(TMP_DIR)/memcheck.out: $(TARGET)
 
 clean:
 	@echo Cleaning
-	@rm -rf $(BIN_DIR) $(OBJ_DIR) $(DEP_DIR) $(TMP_DIR)
+	@rm -rf $(BIN_DIR) $(OBJ_DIR) $(TMP_DIR)
 	@find . -type f -name '*.tmp' -exec rm -f {} \;
+
+depclean:
+	@echo Cleaning dependencies
+	@rm -rf $(DEP_DIR)
+
+clean-all: clean depclean
 
 DEP_FILES := $(patsubst $(OBJ_DIR)/%.o, $(DEP_DIR)/%.d, $(CPP_OBJ_FILES) $(TEST_OBJ_FILES))
 $(DEP_FILES):
