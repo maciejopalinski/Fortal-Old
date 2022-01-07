@@ -61,6 +61,8 @@ $(TMP_DIR)/memcheck.out: $(TARGET)
 cppcheck:
 	cppcheck $(SRC_DIR) --std=c++17 --enable=all --suppress=noExplicitConstructor --suppress=useStlAlgorithm --suppress=wrongPrintfScanfArgNum --suppress=cstyleCast --force -q
 
+cppclean:
+	cppclean $(SRC_DIR)
 
 
 
