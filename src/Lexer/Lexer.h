@@ -6,13 +6,7 @@ using std::shared_ptr;
 using std::make_shared;
 
 #include "../ErrorHandler/ErrorHandler.h"
-#include "../Token/Token.h"
-#include "../Token/TokenComment.h"
-#include "../Token/TokenIdentifier.h"
-#include "../Token/TokenKeyword.h"
-#include "../Token/TokenLiteral.h"
-#include "../Token/TokenOperator.h"
-#include "../Token/TokenSeparator.h"
+#include "../Token/Tokens.all.h"
 
 class Lexer
 {
