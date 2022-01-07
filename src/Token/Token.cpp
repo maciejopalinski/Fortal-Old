@@ -1,5 +1,5 @@
 #include "Token.h"
-#include "../Utils/MagicEnum.hpp"
+#include "MagicEnum.hpp"
 
 const char *TokenType_printable_strings[] =
 {

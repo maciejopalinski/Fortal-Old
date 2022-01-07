@@ -1,5 +1,5 @@
 #include "Definition.h"
-#include "../../../Utils/MagicEnum.hpp"
+#include "MagicEnum.hpp"
 
 const char *DefinitionType_printable_strings[] =
 {

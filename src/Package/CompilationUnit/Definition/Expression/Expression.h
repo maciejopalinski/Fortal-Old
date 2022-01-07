@@ -5,7 +5,7 @@ using std::string;
 using std::shared_ptr;
 using std::make_shared;
 
-#include "../../../../Utils/MagicEnum.hpp"
+#include "MagicEnum.hpp"
 #include "../../../../Utils/Format.h"
 
 enum ExpressionType

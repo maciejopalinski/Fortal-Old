@@ -4,7 +4,7 @@
 using std::find;
 using std::vector;
 
-#include "../Utils/MagicEnum.hpp"
+#include "MagicEnum.hpp"
 #include "Token.h"
 
 template<class T>

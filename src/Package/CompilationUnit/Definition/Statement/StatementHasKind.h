@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../../Utils/MagicEnum.hpp"
+#include "MagicEnum.hpp"
 #include "Statement.h"
 
 template<class T>
