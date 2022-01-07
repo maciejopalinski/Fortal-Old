@@ -55,16 +55,11 @@ $(TMP_DIR)/memcheck.out: $(TARGET)
 	@mkdir -p $(TMP_DIR)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=$(TMP_DIR)/memcheck.out $(TARGET) $(ARGS)
 
-massif: $(TMP_DIR)/massif.out
 
-$(TMP_DIR)/massif.out: $(TARGET)
-	@mkdir -p $(TMP_DIR)
-	valgrind --tool=massif --massif-out-file=$(TMP_DIR)/massif.out $(TARGET) $(ARGS)
 
-ms_print: $(TMP_DIR)/ms_print.out
 
-$(TMP_DIR)/ms_print.out: $(TMP_DIR)/massif.out
-	ms_print $(TMP_DIR)/massif.out > $(TMP_DIR)/ms_print.out
+
+
 
 clean:
 	@echo Cleaning
