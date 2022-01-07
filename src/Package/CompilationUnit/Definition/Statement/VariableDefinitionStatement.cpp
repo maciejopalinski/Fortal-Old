@@ -15,7 +15,7 @@ void VariableDefinitionStatement::setDefinition(shared_ptr<VariableDefinition> d
     this->definition = definition;
 }
 
-string VariableDefinitionStatement::getDebug(string indent, bool last, string custom)
+string VariableDefinitionStatement::getDebug(string indent, bool last, const string &custom)
 {
     string output = Statement::getDebug(indent, last, custom);
 

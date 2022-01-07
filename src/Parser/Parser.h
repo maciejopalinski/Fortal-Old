@@ -42,12 +42,12 @@ class Parser
         string getCurrentTokenDescription();
 
         template<class T>
-        bool expectKind(TokenType token_type, T token_kind, bool report_error = false, string custom_message = "");
+        bool expectKind(TokenType token_type, T token_kind, bool report_error = false, const string &custom_message = "");
         bool expect(TokenType token_type, bool report_error = false, string custom_message = "");
 
         template<class T>
-        shared_ptr<TokenHasKind<T>> eatKind(TokenType token_type, T token_kind, bool report_error = false, string custom_message = "");
-        shared_ptr<Token> eat(TokenType token_type, bool report_error = false, string custom_message = "");
+        shared_ptr<TokenHasKind<T>> eatKind(TokenType token_type, T token_kind, bool report_error = false, const string &custom_message = "");
+        shared_ptr<Token> eat(TokenType token_type, bool report_error = false, const string &custom_message = "");
 
         // EXPRESSION WRAPPER
         vector<shared_ptr<Expression>> getExpressionList(bool required = false);
@@ -89,10 +89,10 @@ class Parser
         shared_ptr<EmptyStatement> getEmptyStatement(bool required = false);
 
         // TOKENS / UTILS
-        shared_ptr<TokenLiteral> getLiteral(bool required = false, string custom_message = "");
-        shared_ptr<TokenIdentifier> getIdentifier(bool required = false, string custom_message = "");
+        shared_ptr<TokenLiteral> getLiteral(bool required = false, const string &custom_message = "");
+        shared_ptr<TokenIdentifier> getIdentifier(bool required = false, const string &custom_message = "");
         vector<shared_ptr<TokenIdentifier>> getIdentifierList(bool required = false);
-        shared_ptr<TokenKeyword> getKeyword(bool required = false, string custom_message = "");
+        shared_ptr<TokenKeyword> getKeyword(bool required = false, const string &custom_message = "");
         shared_ptr<Modifiers> getModifiers();
         shared_ptr<DataType> getDataType(bool required = false);
         shared_ptr<VariableDefinition> getFunctionParameter(bool required = false);
@@ -115,7 +115,7 @@ class Parser
 };
 
 template<class T>
-bool Parser::expectKind(TokenType token_type, T token_kind, bool report_error, string custom_message)
+bool Parser::expectKind(TokenType token_type, T token_kind, bool report_error, const string &custom_message)
 {
     if (current_token && current_token->getType() == token_type)
     {
@@ -152,7 +152,7 @@ bool Parser::expectKind(TokenType token_type, T token_kind, bool report_error, s
 }
 
 template<class T>
-shared_ptr<TokenHasKind<T>> Parser::eatKind(TokenType token_type, T token_kind, bool report_error, string custom_message)
+shared_ptr<TokenHasKind<T>> Parser::eatKind(TokenType token_type, T token_kind, bool report_error, const string &custom_message)
 {
     if (expectKind(token_type, token_kind, report_error, custom_message))
     {

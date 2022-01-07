@@ -52,5 +52,5 @@ class TokenLiteral : public TokenHasKind<TokenLiteralType>
         static string getPrintableKindString(TokenLiteralType kind);
         string getPrintableKindString();
 
-        string getDebug(string inside = "");
+        string getDebug(const string &inside = "") override;
 };

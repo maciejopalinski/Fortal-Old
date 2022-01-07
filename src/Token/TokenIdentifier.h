@@ -17,5 +17,5 @@ class TokenIdentifier : public Token
         string getName();
         void setName(string name);
 
-        string getDebug(string inside = "");
+        string getDebug(const string &inside = "") override;
 };

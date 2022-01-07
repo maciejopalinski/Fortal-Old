@@ -6,7 +6,7 @@ const char *TokenCommentType_printable_strings[] =
     "block"
 };
 
-TokenComment::TokenComment(TokenCommentKind kind, string content) : TokenHasKind(kind)
+TokenComment::TokenComment(TokenCommentKind kind, const string &content) : TokenHasKind(kind)
 {
     setContent(content);
 };
@@ -16,7 +16,7 @@ string TokenComment::getContent()
     return this->content;
 }
 
-void TokenComment::setContent(const string content)
+void TokenComment::setContent(const string &content)
 {
     this->content = content;
 }
@@ -36,7 +36,7 @@ string TokenComment::getPrintableKindString()
     return getPrintableKindString(getKind());
 }
 
-string TokenComment::getDebug(string inside)
+string TokenComment::getDebug(const string &inside)
 {
     return
         TokenHasKind::getDebug(

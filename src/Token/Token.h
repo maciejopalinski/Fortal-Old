@@ -28,7 +28,7 @@ class Token
         const char *getPrintableTypeString();
         static const char *getPrintableTypeString(TokenType type);
 
-        virtual string getDebug(string inside = "");
+        virtual string getDebug(const string &inside = "");
 
         static string getDescription(TokenType type);
         virtual string getDescription();

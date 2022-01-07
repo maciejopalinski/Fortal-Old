@@ -39,7 +39,7 @@ const char *Token::getPrintableTypeString(TokenType type)
     return "(null)";
 }
 
-string Token::getDebug(string inside)
+string Token::getDebug(const string &inside)
 {
     return
         format(

@@ -792,14 +792,14 @@ shared_ptr<EmptyStatement> Parser::getEmptyStatement(bool required)
     return nullptr;
 }
 
-shared_ptr<TokenLiteral> Parser::getLiteral(bool required, string custom_message)
+shared_ptr<TokenLiteral> Parser::getLiteral(bool required, const string &custom_message)
 {
     auto eaten = eat(TOKEN_LITERAL, required, custom_message);
     shared_ptr<TokenLiteral> literal = static_pointer_cast<TokenLiteral>(eaten);
     return literal;
 }
 
-shared_ptr<TokenIdentifier> Parser::getIdentifier(bool required, string custom_message)
+shared_ptr<TokenIdentifier> Parser::getIdentifier(bool required, const string &custom_message)
 {
     auto eaten = eat(TOKEN_IDENTIFIER, required, custom_message);
     shared_ptr<TokenIdentifier> ident = static_pointer_cast<TokenIdentifier>(eaten);
@@ -822,7 +822,7 @@ vector<shared_ptr<TokenIdentifier>> Parser::getIdentifierList(bool required)
     return idents;
 }
 
-shared_ptr<TokenKeyword> Parser::getKeyword(bool required, string custom_message)
+shared_ptr<TokenKeyword> Parser::getKeyword(bool required, const string &custom_message)
 {
     auto eaten = eat(TOKEN_KEYWORD, required, custom_message);
     shared_ptr<TokenKeyword> keyw = static_pointer_cast<TokenKeyword>(eaten);

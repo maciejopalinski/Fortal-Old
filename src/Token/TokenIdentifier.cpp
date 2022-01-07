@@ -15,7 +15,7 @@ void TokenIdentifier::setName(string name)
     this->name = name;
 }
 
-string TokenIdentifier::getDebug(string inside)
+string TokenIdentifier::getDebug(const string &inside)
 {
     return
         Token::getDebug(

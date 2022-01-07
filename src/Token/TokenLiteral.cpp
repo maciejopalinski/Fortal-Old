@@ -86,7 +86,7 @@ string TokenLiteral::getPrintableKindString()
     return getPrintableKindString(getKind());
 }
 
-string TokenLiteral::getDebug(string inside)
+string TokenLiteral::getDebug(const string &inside)
 {
     return
         TokenHasKind::getDebug(

@@ -6,7 +6,7 @@ string TokenSeparator::getPrintableKindString(TokenSeparatorType kind)
 {
     string t = " ";
     t[0] = kind;
-    return t.c_str();
+    return t;
 }
 
 string TokenSeparator::getPrintableKindString()

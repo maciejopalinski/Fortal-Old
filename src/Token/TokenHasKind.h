@@ -42,7 +42,7 @@ class TokenHasKind : public Token
 
         virtual string getPrintableKindString() = 0;
 
-        virtual string getDebug(string inside = "")
+        virtual string getDebug(const string &inside = "") override
         {
             return
                 Token::getDebug(
