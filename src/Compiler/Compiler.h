@@ -12,7 +12,7 @@ class Compiler
 {
     private:
         ErrorHandler &error_handler;
-        shared_ptr<Package> global_package = make_shared<Package>(Package());
+        shared_ptr<Package> global_package = make_shared<Package>();
 
         vector<string> files;
 

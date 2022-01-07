@@ -38,7 +38,7 @@ void Package::addChildPackage(vector<string> name_vector, size_t step)
                 child_v.pop_back();
             }
 
-            child = make_shared<Package>(Package(child_v));
+            child = make_shared<Package>(child_v);
             child_packages.push_back(child);
         }
 

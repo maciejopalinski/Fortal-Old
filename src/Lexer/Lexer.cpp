@@ -130,7 +130,7 @@ shared_ptr<TokenComment> Lexer::getComment()
     shared_ptr<TokenComment> token;
     if (eat("//"))
     {
-        token = make_shared<TokenComment>(TokenComment(TOKEN_COMMENT_LINE));
+        token = make_shared<TokenComment>(TOKEN_COMMENT_LINE);
 
         size_t until   = text.find("\n", location.position);
         string content = text.substr(location.position, until - location.position);
@@ -143,7 +143,7 @@ shared_ptr<TokenComment> Lexer::getComment()
     }
     else if (eat("/*"))
     {
-        token = make_shared<TokenComment>(TokenComment(TOKEN_COMMENT_BLOCK));
+        token = make_shared<TokenComment>(TOKEN_COMMENT_BLOCK);
 
         size_t until   = text.find("*/", location.position);
         string content = text.substr(location.position, until - location.position);
@@ -167,7 +167,7 @@ shared_ptr<TokenKeyword> Lexer::getKeyword()
     {
         if (expect(match, whitespace_after))
         {
-            token = make_shared<TokenKeyword>(TokenKeyword(TokenKeyword::getLexerTypeFromMatch(match)));
+            token = make_shared<TokenKeyword>(TokenKeyword::getLexerTypeFromMatch(match));
             eat(match, true);
             break;
         }
@@ -188,7 +188,7 @@ shared_ptr<TokenIdentifier> Lexer::getIdentifier()
             nextChar();
         }
 
-        token = make_shared<TokenIdentifier>(TokenIdentifier(name));
+        token = make_shared<TokenIdentifier>(name);
     }
 
     return token;
@@ -202,7 +202,7 @@ shared_ptr<TokenSeparator> Lexer::getSeparator()
         string match = " ";
         match[0]     = current_char;
 
-        token = make_shared<TokenSeparator>(TokenSeparator(TokenSeparator::getLexerTypeFromMatch(current_char)));
+        token = make_shared<TokenSeparator>(TokenSeparator::getLexerTypeFromMatch(current_char));
         eat(match, true);
     }
     return token;
@@ -225,7 +225,7 @@ shared_ptr<TokenOperator> Lexer::getOperator()
 
     if (last_match.size() > 0)
     {
-        token = make_shared<TokenOperator>(TokenOperator(TokenOperator::getLexerTypeFromMatch(last_match)));
+        token = make_shared<TokenOperator>(TokenOperator::getLexerTypeFromMatch(last_match));
         eat(last_match, true);
     }
     return token;
@@ -268,12 +268,12 @@ shared_ptr<TokenLiteral> Lexer::getLiteral()
         bool has_sci = number.find("e") != number.npos;
         if (!has_dot && !has_sci)
         {
-            token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_INT));
+            token = make_shared<TokenLiteral>(TOKEN_LITERAL_INT);
             token->setValue(atoll(number.c_str()));
         }
         else
         {
-            token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_DOUBLE));
+            token = make_shared<TokenLiteral>(TOKEN_LITERAL_DOUBLE);
             token->setValue(atof(number.c_str()));
         }
     }
@@ -290,31 +290,31 @@ shared_ptr<TokenLiteral> Lexer::getLiteral()
 
         if (str.size() == 1)
         {
-            token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_CHAR));
+            token = make_shared<TokenLiteral>(TOKEN_LITERAL_CHAR);
             token->setValue((long long) str[0]);
         }
         else if (str.size() > 1)
         {
-            token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_STRING));
+            token = make_shared<TokenLiteral>(TOKEN_LITERAL_STRING);
             token->setValue(str.c_str());
         }
         else
         {
             error_handler.log_empty_character_literal(location);
-            token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_INT));
+            token = make_shared<TokenLiteral>(TOKEN_LITERAL_INT);
             token->setValue((long long) 0);
         }
     }
     else if (expect("true", true) || expect("false", true))
     {
-        token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_BOOL));
+        token = make_shared<TokenLiteral>(TOKEN_LITERAL_BOOL);
         if (eat("true")) token->setValue((long long) true);
         else if (eat("false")) token->setValue((long long) false);
         else token->setNULL(true);
     }
     else if (expect("null", true))
     {
-        token = make_shared<TokenLiteral>(TokenLiteral(TOKEN_LITERAL_NULL));
+        token = make_shared<TokenLiteral>(TOKEN_LITERAL_NULL);
         token->setNULL(true);
         eat("null", true);
     }
