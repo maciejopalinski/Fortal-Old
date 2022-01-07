@@ -69,7 +69,7 @@ string CompilationUnit::getDebug(string indent, bool last)
 
     if (package->getQualifiedIdentifier() != ".")
     {
-        bool last = true;
+        last = true;
         if (!imports.empty() || !definitions.empty()) last = false;
 
         output += package->getDebug(indent, "Package", last);

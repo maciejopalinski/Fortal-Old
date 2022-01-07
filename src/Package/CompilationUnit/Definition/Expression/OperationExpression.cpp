@@ -113,17 +113,17 @@ string OperationExpression::getDebug(string indent, bool last, const string &c)
 
     if (expr_condition)
     {
-        bool last = !(expr_left || expr_right || !call_args.empty());
+        last = !(expr_left || expr_right || !call_args.empty());
         output += expr_condition->getDebug(indent, last);
     }
     if (expr_left)
     {
-        bool last = !(expr_right || !call_args.empty());
+        last = !(expr_right || !call_args.empty());
         output += expr_left->getDebug(indent, last);
     }
     if (expr_right)
     {
-        bool last = call_args.empty();
+        last = call_args.empty();
         output += expr_right->getDebug(indent, last);
     }
     if (!call_args.empty())

@@ -57,17 +57,17 @@ string LoopStatement::getDebug(string indent, bool last, const string &custom)
 
     if (for_init)
     {
-        bool last = !(getCondition() || for_iter || getBody());
+        last = !(getCondition() || for_iter || getBody());
         output += for_init->getDebug(indent, last);
     }
     if (getCondition())
     {
-        bool last = !(for_iter || getBody());
+        last = !(for_iter || getBody());
         output += getCondition()->getDebug(indent, last);
     }
     if (for_iter)
     {
-        bool last = !getBody();
+        last = !getBody();
         output += for_iter->getDebug(indent, last);
     }
     if (getBody())

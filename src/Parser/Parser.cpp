@@ -137,7 +137,7 @@ bool Parser::expect(TokenType token_type, bool report_error, string custom_messa
     return false;
 }
 
-shared_ptr<Token> Parser::eat(TokenType token_type, bool report_error, string custom_message)
+shared_ptr<Token> Parser::eat(TokenType token_type, bool report_error, const string &custom_message)
 {
     if (expect(token_type, report_error, custom_message))
     {

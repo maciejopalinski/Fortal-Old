@@ -25,13 +25,13 @@ string IfStatement::getDebug(string indent, bool last, const string &custom)
 
     if (getCondition())
     {
-        bool last = !(getBody() || else_body);
+        last = !(getBody() || else_body);
         output += getCondition()->getDebug(indent, last);
     }
 
     if (getBody())
     {
-        bool last = !else_body;
+        last = !else_body;
         output += getBody()->getDebug(indent, last);
     }
 
