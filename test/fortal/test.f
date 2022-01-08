@@ -1,5 +1,3 @@
-/* fortal::ignore_parser */
-
 package fortal.examples.lexer;
 
 /*
