@@ -10,7 +10,7 @@ DEP_DIR := deps
 TMP_DIR := tmp
 
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
+CXXFLAGS := -O2 -std=c++17 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
 LIBS := -I$(INC_DIR)
 LDFLAGS :=
 ARGS := -D test/fortal/*.f
