@@ -2,5 +2,6 @@ bin/
 obj/
 deps/
 tmp/
+afl/
 
 *.code-workspace

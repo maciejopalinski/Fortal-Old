@@ -64,9 +64,9 @@ cppcheck:
 cppclean:
 	cppclean $(SRC_DIR)
 
-
-
-
+afl-fuzz: $(TARGET)
+	@mkdir -p afl/test/ afl/find/
+	afl-fuzz -i afl/test -o afl/find -- $(TARGET) -D @@
 
 clean:
 	@echo Cleaning
