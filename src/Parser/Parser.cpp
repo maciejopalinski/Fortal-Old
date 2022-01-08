@@ -1152,15 +1152,6 @@ shared_ptr<AliasDefinition> Parser::getAliasDefinition()
 
 shared_ptr<CompilationUnit> Parser::parse()
 {
-    if (!tokens.empty() && tokens[0]->getType() == TOKEN_COMMENT)
-    {
-        shared_ptr<TokenComment> comment = static_pointer_cast<TokenComment>(tokens[0]);
-        if (comment->getContent() == " fortal::ignore_parser ")
-        {
-            return nullptr;
-        }
-    }
-
     string filename = lexer->getFilename();
 
     auto unit = make_shared<CompilationUnit>(getPackageDefinition(), filename);
