@@ -277,16 +277,19 @@ shared_ptr<TokenLiteral> Lexer::getLiteral()
             token->setValue(atof(number.c_str()));
         }
     }
-    else if ((expect("\'") && eat("\'")) || (expect("\"") && eat("\"")))
+    else if (expect("\'") || expect("\""))
     {
+        string quote_kind;
+        if (eat("\'")) quote_kind = "\'";
+        else if (eat("\"")) quote_kind = "\"";
+
         string str = "";
-        while (!expect("\'") && !expect("\"") && current_char)
+        while (!expect("\'") && !expect("\"") && current_char != '\n')
         {
             str += current_char;
             nextChar();
         }
-        eat("\'");
-        eat("\"");
+        eat(quote_kind, true);
 
         if (str.size() == 1)
         {
@@ -332,7 +335,7 @@ bool Lexer::eat(const string &expected, bool report_error)
     {
         string unexpected = text.substr(location.position, expected.size());
 
-        error_handler.throw_unexpected_token(location, expected, unexpected);
+        error_handler.throw_unexpected_token(location, unexpected, expected);
     }
     return false;
 }
