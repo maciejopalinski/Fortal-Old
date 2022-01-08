@@ -9,8 +9,6 @@ Parser::Parser(ErrorHandler &error_handler, Lexer *lexer) : error_handler(error_
     while ((token = lexer->getNextToken()))
     {
         tokens.push_back(token);
-
-        // error_handler.logLocation(E_DEBUG, token->location, token->getDebug().c_str());
     }
 
     if (!tokens.empty())
@@ -72,7 +70,7 @@ void Parser::saveState(size_t slot)
 
     error_handler.logLocation(
         E_DEBUG,
-        current_token->location,
+        getCurrentTokenLocation(),
         "Saved Parser state"
     );
 }
@@ -85,7 +83,7 @@ void Parser::loadState(size_t slot)
 
     error_handler.logLocation(
         E_DEBUG,
-        current_token->location,
+        getCurrentTokenLocation(),
         "Loaded Parser state"
     );
 }
@@ -118,7 +116,7 @@ bool Parser::expect(TokenType token_type, bool report_error, string custom_messa
         if (!custom_message.empty())
         {
             error_handler.throw_unexpected_token(
-                current_token->location,
+                getCurrentTokenLocation(),
                 custom_message
             );
         }
