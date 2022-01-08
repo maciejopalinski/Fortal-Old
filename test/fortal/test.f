@@ -30,18 +30,19 @@ int32 main()
 
     test(x, y);
 
-    -1.000003
-        3
-        - 1
-        0
-        5.5
-        5.163813681435419142
-        1e-2
-        1e20
-        "test"
-        't'
-        'cttttt'
-        x &= (false | true)
+    -1.000003;
+        3;
+        -1;
+        0;
+        5.5;
+        5.163813681435419142;
+        1e-2;
+        1e20;
+        "test";
+        't';
+        'cttttt';
+        x &= (false | true);
              return null;
 }
-int32
+
+int32 i;

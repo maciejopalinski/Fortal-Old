@@ -15,5 +15,3 @@ void main()
 
     pow(2, 8);
 }
-
-EntryPoint = fortal.examples.procedural#main
