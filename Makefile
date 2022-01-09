@@ -1,3 +1,5 @@
+# TODO: add separate targets and obj dirs for release and debug builds
+
 TARGET := ./bin/fortal
 TEST_TARGET := ./bin/test
 
