@@ -51,8 +51,10 @@ string VariableDefinition::getFunctionParamDebug(string indent, bool last, bool 
             output += "\n" + default_value->getDebug(indent);
         }
     }
-
-    output += (last ? "" : ", ");
+    else
+    {
+        output += (last ? "" : ", ");
+    }
 
     return output;
 }
