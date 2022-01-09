@@ -36,6 +36,7 @@
             "type": "pickString",
             "options": [
                 "test/fortal/*.f",
+                "test/fortal/complex_num.f",
                 "test/fortal/object.f",
                 "test/fortal/procedural.f",
                 "test/fortal/test.f"
