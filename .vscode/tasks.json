@@ -5,7 +5,8 @@
             "label": "build",
             "command": "make",
             "args": [
-                "all"
+                "all",
+                "DEBUG=1"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

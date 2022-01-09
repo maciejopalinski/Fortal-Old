@@ -10,10 +10,15 @@ DEP_DIR := deps
 TMP_DIR := tmp
 
 CXX := g++
-CXXFLAGS := -O2 -std=c++17 -Wall -Wextra -pedantic -Wno-missing-field-initializers -g
+CXXFLAGS := -O2 -std=c++17 -Wall -Wextra -pedantic -Wno-missing-field-initializers
 LIBS := -I$(INC_DIR)
 LDFLAGS :=
 ARGS := -D test/fortal/*.f
+
+DEBUG ?= 0
+ifeq ($(DEBUG), 1)
+	CXXFLAGS += -O0 -g
+endif
 
 CPP_SRC_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
 CPP_OBJ_FILES := $(patsubst %, $(OBJ_DIR)/%.o, $(CPP_SRC_FILES))
