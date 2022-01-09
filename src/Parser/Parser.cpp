@@ -1109,8 +1109,16 @@ shared_ptr<FunctionDefinition> Parser::getFunctionDefinition()
         auto ident = getIdentifier();
         if (ident)
         {
+            string name = ident->getName();
+            if (name == "operator")
+            {
+                auto op = getOperator(true);
+                name += op->getPrintableKindString();
+            }
+
             if (eatKind(TOKEN_SEPARATOR, TOKEN_SEPARATOR_BRACKET_PAREN_L))
             {
+                ident->setName(name);
                 auto def = make_shared<FunctionDefinition>(datatype, ident);
 
                 def->addParameters(getFunctionParameterList());
