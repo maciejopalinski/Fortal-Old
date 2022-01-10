@@ -1,3 +1,3 @@
 #pragma once
 
-#define FORTAL_VERSION "0.1.0"
+#define FORTAL_VERSION "0.4.0"
