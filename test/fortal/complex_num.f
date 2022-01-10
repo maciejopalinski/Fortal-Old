@@ -3,7 +3,7 @@ package fortal.examples.complex_num;
 import fortal.String;
 
 class ComplexNumber {
-    int64 operator = 0;
+    int64 real_part = 0;
     int64 imaginary_part = 0;
 
     ComplexNumber constructor() {
