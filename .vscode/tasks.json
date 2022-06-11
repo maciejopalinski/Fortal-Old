@@ -1,15 +1,11 @@
 {
     "tasks": [
         {
-            "type": "cppbuild",
             "label": "build",
             "command": "make",
-            "args": [
-                "all",
-                "DEBUG=1"
-            ],
+            "args": ["-j"],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}/build/Debug"
             }
         }
     ],

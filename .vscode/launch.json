@@ -8,11 +8,8 @@
             "name": "g++ - build and debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/fortal",
-            "args": [
-                "-D",
-                "${input:filename}"
-            ],
+            "program": "${workspaceFolder}/build/Debug/Fortal",
+            "args": ["-D", "${input:filename}"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

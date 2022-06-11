@@ -1,6 +1,4 @@
-bin/
-obj/
-deps/
+build/
 tmp/
 afl/
 
