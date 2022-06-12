@@ -1,3 +1,5 @@
+style=allman
+
 indent-namespaces
 indent-classes
 indent-switches
